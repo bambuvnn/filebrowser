@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/bambuvnn/filebrowser/backend/common/settings"
-	"github.com/bambuvnn/filebrowser/backend/common/utils"
 	"github.com/bambuvnn/filebrowser/backend/common/version"
 	"github.com/bambuvnn/filebrowser/backend/icons"
 )
@@ -208,7 +207,7 @@ func handleWithStaticData(w http.ResponseWriter, r *http.Request, d *requestCont
 		"mediaAvailable":       settings.MediaEnabled(),
 		"exiftoolAvailable":    settings.Config.Integrations.Media.ExiftoolPath != "",
 		"muPdfAvailable":       settings.Env.MuPdfAvailable,
-		"updateAvailable":      utils.GetUpdateAvailableUrl(),
+		"updateAvailable":      "",
 		"disableNavButtons":    disableNavButtons,
 		"userSelectableThemes": config.Frontend.Styling.CustomThemeOptions,
 		"enableHeicConversion": settings.CanConvertImage("heic"),

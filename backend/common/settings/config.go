@@ -18,7 +18,6 @@ import (
 	"github.com/goccy/go-yaml"
 	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
 	"github.com/bambuvnn/filebrowser/backend/common/utils"
-	"github.com/bambuvnn/filebrowser/backend/common/version"
 	"github.com/bambuvnn/filebrowser/backend/database/users"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
@@ -230,11 +229,6 @@ func setupFrontend(generate bool) {
 		Config.Server.MinSearchLength = 3
 	}
 	if !Config.Frontend.DisableDefaultLinks {
-		Config.Frontend.ExternalLinks = append(Config.Frontend.ExternalLinks, ExternalLink{
-			Text:  fmt.Sprintf("(%v)", version.Version),
-			Title: version.CommitSHA,
-			Url:   "https://github.com/bambuvnn/filebrowser/releases/",
-		})
 		Config.Frontend.ExternalLinks = append(Config.Frontend.ExternalLinks, ExternalLink{
 			Text: "Help",
 			Url:  "help prompt",

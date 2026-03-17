@@ -13,7 +13,6 @@ import (
 
 	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
 	"github.com/bambuvnn/filebrowser/backend/common/settings"
-	"github.com/bambuvnn/filebrowser/backend/common/utils"
 	"github.com/bambuvnn/filebrowser/backend/common/version"
 	"github.com/bambuvnn/filebrowser/backend/database/storage"
 	"github.com/bambuvnn/filebrowser/backend/database/storage/bolt"
@@ -58,19 +57,6 @@ func StartFilebrowser() {
 	if !keepGoing {
 		return
 	}
-	database := fmt.Sprintf("Using existing database  : %v", settings.Config.Server.Database)
-	if !dbExists {
-		database = fmt.Sprintf("Creating new database    : %v", settings.Config.Server.Database)
-	}
-	if !settings.Config.Server.DisableUpdateCheck {
-		info, _ := utils.CheckForUpdates()
-		if info.LatestVersion != "" {
-			logger.Infof("A new version is available: %s (current: %s)", info.LatestVersion, info.CurrentVersion)
-			logger.Infof("Release notes: %s", info.ReleaseNotes)
-		}
-		go utils.StartCheckForUpdates()
-	}
-
 	// Create context and channels for graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
