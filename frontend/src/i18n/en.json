@@ -138,6 +138,7 @@
     "copyPath": "Copy Path",
     "copyToClipboard": "Copy to clipboard",
     "copyDownloadLinkToClipboard": "Copy download link to clipboard",
+    "copyUrl": "Copy url",
     "moveFile": "Move file",
     "permalink": "Get Permanent Link",
     "reportIssue": "Report Issue",

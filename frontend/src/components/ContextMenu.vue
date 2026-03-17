@@ -58,6 +58,12 @@
         :label="$t('general.info')"
         @action="showInfoPrompt"
       />
+      <action
+        v-if="showCopyUrl"
+        icon="link"
+        :label="$t('buttons.copyUrl')"
+        @action="copyItemUrl"
+      />
 
       <action
         v-if="showDownload"
@@ -187,6 +193,7 @@ import { notify } from "@/notify";
 import { resourcesApi } from "@/api";
 import { url } from "@/utils";
 import { copyToClipboard } from "@/utils/clipboard";
+import { buildItemUrl } from "@/utils/url.js";
 
 function isArchivePath(pathOrName) {
   if (!pathOrName || typeof pathOrName !== "string") return false;
@@ -266,6 +273,10 @@ export default {
     showInfo() {
       if (this.showLimitedOptions) return this.selectedCount == 1;
       return !this.showCreate && this.selectedCount == 1;
+    },
+    showCopyUrl() {
+      if (this.showLimitedOptions) return false;
+      return !this.showCreate && !this.isShare && getters.isLoggedIn() && this.selectedCount === 1;
     },
     showDownload() {
       if (this.showLimitedOptions) return false;
@@ -629,6 +640,23 @@ export default {
       mutations.closeTopPrompt();
       const items = this.providedItems;
       downloadFiles(items);
+    },
+    async copyItemUrl() {
+      mutations.closeContextMenus();
+      const items = this.providedItems;
+      const urls = items.map(item => {
+        const source = item.source || state.req.source;
+        const path = item.path || item.from;
+        const relativePath = buildItemUrl(source, path, true);
+        return `${window.location.origin}${relativePath}`;
+      });
+      const text = urls.join('\n');
+      try {
+        await navigator.clipboard.writeText(text);
+        notify.showSuccessToast(this.$t('success.linkCopied'));
+      } catch {
+        notify.showErrorToast(this.$t('prompts.copyToClipboardFailed'));
+      }
     },
     showDeletePrompt() {
       mutations.closeTopPrompt();
