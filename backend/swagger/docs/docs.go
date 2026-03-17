@@ -752,6 +752,44 @@ const docTemplate = `{
                 ]
             }
         },
+        "/api/auth/refresh": {
+            "post": {
+                "description": "Uses the refresh token cookie to generate a new session token without re-authentication.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh session using refresh token",
+                "responses": {
+                    "200": {
+                        "description": "New JWT token for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid or expired refresh token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/renew": {
             "post": {
                 "description": "Refresh the authentication token for a logged-in user.",

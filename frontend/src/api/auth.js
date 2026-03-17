@@ -3,7 +3,7 @@ import { getApiPath } from '@/utils/url.js'
 import { notify } from '@/notify'
 
 // POST /api/auth/login
-export async function login(username, password, recaptcha, otp) {
+export async function login(username, password, recaptcha, otp, rememberMe) {
   if (!otp) {
     otp = ''
   }
@@ -15,6 +15,9 @@ export async function login(username, password, recaptcha, otp) {
   }
 
   const params = { username, recaptcha };
+  if (rememberMe) {
+    params.rememberMe = 'true';
+  }
   let apiPath = getApiPath('auth/login', params);
   const res = await fetch(apiPath, {
     method: 'POST',

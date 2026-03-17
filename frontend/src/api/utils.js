@@ -1,5 +1,5 @@
 import { state } from "@/store";
-import { renew } from "@/utils/auth";
+import { renew, refresh } from "@/utils/auth";
 import i18n from "@/i18n";
 
 export async function fetchURL(url, opts, auth = true) {
@@ -30,6 +30,22 @@ export async function fetchURL(url, opts, auth = true) {
   if (auth && res.headers.get("X-Renew-Token") === "true") {
     // Cookie is automatically sent, no need to pass JWT from state
     await renew();
+  }
+
+  // Auto-retry with refresh token on 401 (session expired but remember-me may be active)
+  if (res.status === 401 && auth) {
+    const refreshed = await refresh();
+    if (refreshed) {
+      // Retry the original request with the new session
+      res = await fetch(url, {
+        credentials: 'same-origin',
+        headers: {
+          "sessionId": state.sessionId,
+          ...headers,
+        },
+        ...rest,
+      });
+    }
   }
 
   if (res.status < 200 || res.status > 299) {

@@ -98,6 +98,7 @@ func StartHttp(ctx context.Context, storage *bolt.BoltStore, shutdownComplete ch
 	api.HandleFunc("POST /auth/otp/generate", withOrWithoutUser(generateOTPHandler))
 	api.HandleFunc("POST /auth/otp/verify", withOrWithoutUser(verifyOTPHandler))
 	api.HandleFunc("POST /auth/renew", withUser(renewHandler))
+	api.HandleFunc("POST /auth/refresh", withoutUser(refreshHandler))
 	api.HandleFunc("POST /auth/token", withUser(createApiTokenHandler))
 	api.HandleFunc("DELETE /auth/token", withUser(deleteApiTokenHandler))
 	api.HandleFunc("GET /auth/token/list", withUser(listApiTokensHandler))
