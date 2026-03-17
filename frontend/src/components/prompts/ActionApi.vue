@@ -101,6 +101,7 @@ export default {
       await copyToClipboard(text);
     },
     formatTime(timestamp) {
+      if (!timestamp || timestamp === 0) return this.$t("api.never");
       return new Date(timestamp * 1000).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",

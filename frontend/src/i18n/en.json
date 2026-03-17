@@ -631,7 +631,10 @@
     "clickToCopyKey": "Click to copy token (hidden)",
     "customizeToken": "Customize Token",
     "customizeTokenInfo": "Customize the token permissions and attributes. This will create a longer token which may not work some WebDAV clients.",
-    "minimalInfo": "Excludes token customizations, permissions will match the associated user and have no other attributes."
+    "minimalInfo": "Excludes token customizations, permissions will match the associated user and have no other attributes.",
+    "neverExpire": "Never Expire",
+    "neverExpireInfo": "Create a token that never expires. Use with caution — non-expiring tokens remain valid until manually deleted.",
+    "never": "Never"
   },
   "index": {
     "unknown": "Unknown",

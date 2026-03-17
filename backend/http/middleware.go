@@ -397,13 +397,14 @@ func withUserHelper(fn handleFunc) handleFunc {
 		if auth.IsRevokedApiToken(store.Access, data.token) {
 			return http.StatusUnauthorized, fmt.Errorf("token is expired or revoked")
 		}
-		// ExpiresAt should always be set in valid tokens created by our system
-		// JWT library populates RegisteredClaims.ExpiresAt
+		// ExpiresAt may be nil for non-expiring API tokens
+		// For tokens without ExpiresAt, verify they are valid by checking the issuer
 		if tk.RegisteredClaims.ExpiresAt == nil {
-			return http.StatusUnauthorized, fmt.Errorf("token is invalid or revoked")
-		}
-		// Check if token is about to expire for renewal header
-		if tk.RegisteredClaims.ExpiresAt.Unix() < time.Now().Add(time.Minute*30).Unix() {
+			if tk.RegisteredClaims.Issuer != auth.FB_ISSUER {
+				return http.StatusUnauthorized, fmt.Errorf("token is invalid or revoked")
+			}
+		} else if tk.RegisteredClaims.ExpiresAt.Unix() < time.Now().Add(time.Minute*30).Unix() {
+			// Check if token is about to expire for renewal header (only for expiring tokens)
 			w.Header().Add("X-Renew-Token", "true")
 		}
 		// Check if token is minimal/stateful (no BelongsTo in claim)

@@ -11,15 +11,27 @@
     <input v-focus class="input" type="text" v-model.trim="apiName"
       :placeholder="$t('api.keyNamePlaceholder')" />
 
-    <!-- Duration Input -->
-    <p>{{ $t('api.tokenDuration') }}</p>
-    <div class="sizeInputWrapper">
-      <input class="sizeInput roundedInputLeft input" v-model.number="duration" type="number" min="1"
-        :placeholder="$t('api.durationNumberPlaceholder')" />
-      <select v-model="unit" class="roundedInputRight input">
-        <option value="days">{{ $t('api.days') }}</option>
-        <option value="months">{{ $t('api.months') }}</option>
-      </select>
+    <!-- Never Expire Toggle -->
+    <div class="settings-items">
+      <ToggleSwitch
+        v-model="neverExpire"
+        :name="$t('api.neverExpire')"
+        class="item"
+        :description="$t('api.neverExpireInfo')"
+      />
+    </div>
+
+    <!-- Duration Input (hidden when neverExpire is on) -->
+    <div v-if="!neverExpire">
+      <p>{{ $t('api.tokenDuration') }}</p>
+      <div class="sizeInputWrapper">
+        <input class="sizeInput roundedInputLeft input" v-model.number="duration" type="number" min="1"
+          :placeholder="$t('api.durationNumberPlaceholder')" />
+        <select v-model="unit" class="roundedInputRight input">
+          <option value="days">{{ $t('api.days') }}</option>
+          <option value="months">{{ $t('api.months') }}</option>
+        </select>
+      </div>
     </div>
 
     <!-- Customize Token Option -->
@@ -69,6 +81,7 @@ export default {
       apiName: "",
       duration: 1,
       unit: "days",
+      neverExpire: false,
       customizeToken: false, // false = minimal token (default), true = customizable/full token
       localPerms: {},
       creating: false,
@@ -99,8 +112,8 @@ export default {
   },
   computed: {
     durationInDays() {
-      // Calculate duration based on unit
-      return this.unit === "days" ? this.duration : this.duration * 30; // assuming 30 days per month
+      if (this.neverExpire) return 0;
+      return this.unit === "days" ? this.duration : this.duration * 30;
     },
   },
   methods: {
