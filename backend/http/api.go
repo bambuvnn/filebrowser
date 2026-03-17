@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/auth"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/auth"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

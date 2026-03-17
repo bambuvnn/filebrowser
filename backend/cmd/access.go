@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/database/access"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/database/access"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

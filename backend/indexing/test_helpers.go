@@ -1,7 +1,7 @@
 package indexing
 
 import (
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
 	"golang.org/x/net/webdav"
 )
 

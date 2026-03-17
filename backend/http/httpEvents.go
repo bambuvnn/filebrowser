@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/events"
+	"github.com/bambuvnn/filebrowser/backend/events"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

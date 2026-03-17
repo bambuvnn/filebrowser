@@ -3,12 +3,12 @@ package bolt
 import (
 	storm "github.com/asdine/storm/v3"
 
-	"github.com/gtsteffaniak/filebrowser/backend/auth"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/database/access"
-	"github.com/gtsteffaniak/filebrowser/backend/database/dbindex"
-	"github.com/gtsteffaniak/filebrowser/backend/database/share"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/auth"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/database/access"
+	"github.com/bambuvnn/filebrowser/backend/database/dbindex"
+	"github.com/bambuvnn/filebrowser/backend/database/share"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 )
 
 // Storage is a storage powered by a Backend which makes the necessary

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/events"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/events"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
 )
 
 // fileWatchResponse represents the response from file watch

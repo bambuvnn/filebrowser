@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
 )
 
 // GetImageOrientation extracts the EXIF orientation from an image file using exiftool

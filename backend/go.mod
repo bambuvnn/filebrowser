@@ -1,4 +1,4 @@
-module github.com/gtsteffaniak/filebrowser/backend
+module github.com/bambuvnn/filebrowser/backend
 
 go 1.25.0
 

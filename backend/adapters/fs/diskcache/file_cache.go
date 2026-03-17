@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

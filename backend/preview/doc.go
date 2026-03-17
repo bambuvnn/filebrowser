@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/gen2brain/go-fitz"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing/iteminfo"
+	"github.com/bambuvnn/filebrowser/backend/indexing/iteminfo"
 )
 
 func docEnabled() bool {

@@ -16,11 +16,11 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/database/share"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/database/share"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

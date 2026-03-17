@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/version"
+	"github.com/bambuvnn/filebrowser/backend/common/version"
 	"github.com/gtsteffaniak/go-logger/logger"
 	"golang.org/x/mod/semver"
 )

@@ -4,7 +4,7 @@ package settings
 import (
 	"crypto/rand"
 
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 )
 
 // boolPtr returns a pointer to a bool value

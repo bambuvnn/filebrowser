@@ -7,8 +7,8 @@ COPY ./backend ./
 RUN apk update && apk add --no-cache gcc musl-dev
 ENV CGO_ENABLED=1
 RUN go build -tags mupdf,musl -ldflags="-w -s \
-  -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.Version=${VERSION}' \
-  -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.CommitSHA=${REVISION}'" \
+  -X 'github.com/bambuvnn/filebrowser/backend/common/version.Version=${VERSION}' \
+  -X 'github.com/bambuvnn/filebrowser/backend/common/version.CommitSHA=${REVISION}'" \
   -o filebrowser .
 
 FROM node:jod-slim AS nbuild

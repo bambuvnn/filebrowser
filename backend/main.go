@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gtsteffaniak/filebrowser/backend/cmd"
+	"github.com/bambuvnn/filebrowser/backend/cmd"
 )
 
 func main() {

@@ -1,7 +1,7 @@
 package settings
 
 import (
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

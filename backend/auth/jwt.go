@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

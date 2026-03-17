@@ -17,10 +17,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/files"
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/files"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
 	"github.com/gtsteffaniak/go-logger/logger"
 	"golang.org/x/time/rate"
 )

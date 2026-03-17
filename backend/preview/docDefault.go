@@ -5,7 +5,7 @@ package preview
 import (
 	"context"
 
-	"github.com/gtsteffaniak/filebrowser/backend/indexing/iteminfo"
+	"github.com/bambuvnn/filebrowser/backend/indexing/iteminfo"
 )
 
 func docEnabled() bool {

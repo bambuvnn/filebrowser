@@ -1,7 +1,10 @@
 package icons
 
 import (
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
+	"path/filepath"
+	"strings"
+
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
 )
 
 // PWAManifest represents the web app manifest structure

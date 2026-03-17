@@ -8,11 +8,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/files"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/ffmpeg"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/files"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/ffmpeg"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
 )
 
 // subtitlesHandler handles subtitle requests for both external files and embedded streams

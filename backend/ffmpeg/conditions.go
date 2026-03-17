@@ -1,6 +1,6 @@
 package ffmpeg
 
-import "github.com/gtsteffaniak/filebrowser/backend/common/settings"
+import "github.com/bambuvnn/filebrowser/backend/common/settings"
 
 func CanConvertImage(ext string) bool {
 	if !MediaEnabled() {

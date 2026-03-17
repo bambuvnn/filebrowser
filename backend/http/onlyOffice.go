@@ -13,11 +13,11 @@ import (
 	"strings"
 
 	jwt "github.com/golang-jwt/jwt/v4"
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/files"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing/iteminfo"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/files"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/indexing/iteminfo"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

@@ -10,11 +10,11 @@ import (
 	"strings"
 
 	"github.com/goccy/go-yaml"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/common/version"
-	"github.com/gtsteffaniak/filebrowser/backend/database/storage"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing/iteminfo"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/version"
+	"github.com/bambuvnn/filebrowser/backend/database/storage"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/indexing/iteminfo"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 
@@ -82,7 +82,7 @@ func runCLI() (bool, bool) {
 			fmt.Printf(`FileBrowser Quantum - A modern web-based file manager
 	Version 	 : %v
 	Commit 		 : %v
-	Release Info 	 : https://github.com/gtsteffaniak/filebrowser/releases/tag/%v
+	Release Info 	 : https://github.com/bambuvnn/filebrowser/releases/tag/%v
 `, version.Version, version.CommitSHA, version.Version)
 			return false, false
 		case "setup":

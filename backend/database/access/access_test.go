@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"github.com/asdine/storm/v3"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/database/access"
-	boltusers "github.com/gtsteffaniak/filebrowser/backend/database/storage/bolt"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/database/access"
+	boltusers "github.com/bambuvnn/filebrowser/backend/database/storage/bolt"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 )
 
 func createTestStorage(t *testing.T) (*access.Storage, *users.Storage) {

@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/gtsteffaniak/filebrowser/backend/auth"
+	"github.com/bambuvnn/filebrowser/backend/auth"
 )
 
 func TestVerifyExternalJWT_ValidToken(t *testing.T) {

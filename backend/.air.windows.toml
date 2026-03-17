@@ -2,7 +2,7 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-  cmd = "go build -o ./tmp/filebrowser.exe --ldflags=\"-w -s -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.CommitSHA=commitSHA' -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.Version=version'\" ."
+  cmd = "go build -o ./tmp/filebrowser.exe --ldflags=\"-w -s -X 'github.com/bambuvnn/filebrowser/backend/common/version.CommitSHA=commitSHA' -X 'github.com/bambuvnn/filebrowser/backend/common/version.Version=version'\" ."
   bin = "tmp/filebrowser.exe"
   args_bin = ["-c", "test_config.yaml"]
   include_ext = ["go", "tpl", "tmpl", "html"]

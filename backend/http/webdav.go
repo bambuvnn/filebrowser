@@ -12,13 +12,13 @@ import (
 	"github.com/gtsteffaniak/go-logger/logger"
 	"golang.org/x/net/webdav"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/files"
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
-	commonerrors "github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing/iteminfo"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/files"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
+	commonerrors "github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/indexing/iteminfo"
 )
 
 // fileInfoWrapper wraps iteminfo.ItemInfo to implement os.FileInfo

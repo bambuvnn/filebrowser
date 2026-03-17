@@ -3,7 +3,7 @@ package share
 import (
 	"sync"
 
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 )
 
 type CommonShare struct {

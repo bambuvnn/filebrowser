@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

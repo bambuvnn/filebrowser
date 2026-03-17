@@ -11,7 +11,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/image/bmp"

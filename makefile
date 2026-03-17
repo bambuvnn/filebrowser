@@ -35,14 +35,14 @@ update:
 build: build-frontend build-backend
 
 build-docker:
-	docker build --build-arg="VERSION=testing" --build-arg="REVISION=n/a" -t gtstef/filebrowser -f _docker/Dockerfile .
+	docker build --build-arg="VERSION=testing" --build-arg="REVISION=n/a" -t bambuvnn/filebrowser -f _docker/Dockerfile .
 
 build-docker-slim:
-	docker build --build-arg="VERSION=testing" --build-arg="REVISION=n/a" -t gtstef/filebrowser -f _docker/Dockerfile.slim .
+	docker build --build-arg="VERSION=testing" --build-arg="REVISION=n/a" -t bambuvnn/filebrowser -f _docker/Dockerfile.slim .
 
 build-backend:
 	@echo "Building backend..."
-	cd backend && go build -o filebrowser --ldflags="-w -s -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.CommitSHA=testingCommit' -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.Version=testing'"
+	cd backend && go build -o filebrowser --ldflags="-w -s -X 'github.com/bambuvnn/filebrowser/backend/common/version.CommitSHA=testingCommit' -X 'github.com/bambuvnn/filebrowser/backend/common/version.Version=testing'"
 	@echo "✓ Backend built successfully"
 
 # New dev target with hot-reloading for frontend and backend
@@ -65,7 +65,7 @@ run: build-frontend generate-docs
 		sed -i '/func init/,+3d' backend/swagger/docs/docs.go; \
 	fi
 	cd backend && CGO_ENABLED=1 FILEBROWSER_DEVMODE=true go run --tags=mupdf \
-	--ldflags="-w -s -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.CommitSHA=testingCommit' -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.Version=testing'" . -c test_config.yaml
+	--ldflags="-w -s -X 'github.com/bambuvnn/filebrowser/backend/common/version.CommitSHA=testingCommit' -X 'github.com/bambuvnn/filebrowser/backend/common/version.Version=testing'" . -c test_config.yaml
 
 generate-docs:
 	@echo "NOTE: Run 'make setup' if you haven't already."
@@ -136,7 +136,7 @@ run-jwt: build-frontend
 # once local playwright server is running, you can also watch the tests interactively with:
 # cd frontend && npx playwright test --project dark-screenshots --ui
 screenshots: build-frontend
-	cd backend && GOOS=linux go build -o filebrowser --ldflags="-w -s -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.Version=latest'" .
+	cd backend && GOOS=linux go build -o filebrowser --ldflags="-w -s -X 'github.com/bambuvnn/filebrowser/backend/common/version.Version=latest'" .
 	@echo "Running screenshots..."
 	cd _docker && docker compose down && docker compose up --build local-playwright-screenshots
 	@if [ -d ../filebrowserDocs ]; then \

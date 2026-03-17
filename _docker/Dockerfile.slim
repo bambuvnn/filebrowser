@@ -5,8 +5,8 @@ WORKDIR /app
 COPY ./backend ./
 RUN apk update && apk add
 RUN go build -ldflags="-w -s \
-  -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.Version=${VERSION}' \
-  -X 'github.com/gtsteffaniak/filebrowser/backend/common/version.CommitSHA=${REVISION}'" \
+  -X 'github.com/bambuvnn/filebrowser/backend/common/version.Version=${VERSION}' \
+  -X 'github.com/bambuvnn/filebrowser/backend/common/version.CommitSHA=${REVISION}'" \
   -o filebrowser .
 
 FROM node:jod-slim AS nbuild

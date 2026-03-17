@@ -57,8 +57,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            gtstef/filebrowser
-            ghcr.io/gtsteffaniak/filebrowser
+            bambuvnn/filebrowser
+            ghcr.io/bambuvnn/filebrowser
       - name: Modify tags (strip 'v' and add version tags)
         id: modify-json
         run: |
@@ -79,25 +79,25 @@ jobs:
               | ($version_split[1:] | join("-")) as $suffix
               | ($version_parts | "\(.[0]).\(.[1])") as $major_minor
               | ($version_parts[0]) as $major
-              | "gtstef/filebrowser:\($major_minor)-\($suffix)",
-                "ghcr.io/gtsteffaniak/filebrowser:\($major_minor)-\($suffix)",
-                "gtstef/filebrowser:\($major)-\($suffix)",
-                "ghcr.io/gtsteffaniak/filebrowser:\($major)-\($suffix)"
+              | "bambuvnn/filebrowser:\($major_minor)-\($suffix)",
+                "ghcr.io/bambuvnn/filebrowser:\($major_minor)-\($suffix)",
+                "bambuvnn/filebrowser:\($major)-\($suffix)",
+                "ghcr.io/bambuvnn/filebrowser:\($major)-\($suffix)"
             ] |
             # Add suffix-only tags for beta (only if tag ends with -beta)
             if any(.tags[]; split(":")[-1] | endswith("-beta")) then
               .tags += [
-                "gtstef/filebrowser:beta",
-                "ghcr.io/gtsteffaniak/filebrowser:beta"
+                "bambuvnn/filebrowser:beta",
+                "ghcr.io/bambuvnn/filebrowser:beta"
               ]
             else . end |
             # Add suffix-only tags for stable (and latest) (only if tag ends with -stable)
             if any(.tags[]; split(":")[-1] | endswith("-stable")) then
               .tags += [
-                "gtstef/filebrowser:stable",
-                "ghcr.io/gtsteffaniak/filebrowser:stable",
-                "gtstef/filebrowser:latest",
-                "ghcr.io/gtsteffaniak/filebrowser:latest"
+                "bambuvnn/filebrowser:stable",
+                "ghcr.io/bambuvnn/filebrowser:stable",
+                "bambuvnn/filebrowser:latest",
+                "ghcr.io/bambuvnn/filebrowser:latest"
               ]
             else . end
           ')
@@ -142,8 +142,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            gtstef/filebrowser
-            ghcr.io/gtsteffaniak/filebrowser
+            bambuvnn/filebrowser
+            ghcr.io/bambuvnn/filebrowser
       - name: Modify tags (strip 'v' and add 'slim' if needed)
         id: modify-json-slim
         run: |
@@ -165,23 +165,23 @@ jobs:
               | ($version_split[1:] | join("-")) as $suffix
               | ($version_parts | "\(.[0]).\(.[1])") as $major_minor
               | ($version_parts[0]) as $major
-              | "gtstef/filebrowser:\($major_minor)-\($suffix)",
-                "ghcr.io/gtsteffaniak/filebrowser:\($major_minor)-\($suffix)",
-                "gtstef/filebrowser:\($major)-\($suffix)",
-                "ghcr.io/gtsteffaniak/filebrowser:\($major)-\($suffix)"
+              | "bambuvnn/filebrowser:\($major_minor)-\($suffix)",
+                "ghcr.io/bambuvnn/filebrowser:\($major_minor)-\($suffix)",
+                "bambuvnn/filebrowser:\($major)-\($suffix)",
+                "ghcr.io/bambuvnn/filebrowser:\($major)-\($suffix)"
             ] |
             # Add suffix-only tags for beta-slim (only if tag ends with -beta-slim)
             if any(.tags[]; split(":")[-1] | endswith("-beta-slim")) then
               .tags += [
-                "gtstef/filebrowser:beta-slim",
-                "ghcr.io/gtsteffaniak/filebrowser:beta-slim"
+                "bambuvnn/filebrowser:beta-slim",
+                "ghcr.io/bambuvnn/filebrowser:beta-slim"
               ]
             else . end |
             # Add suffix-only tags for stable-slim (only if tag ends with -stable-slim)
             if any(.tags[]; split(":")[-1] | endswith("-stable-slim")) then
               .tags += [
-                "gtstef/filebrowser:stable-slim",
-                "ghcr.io/gtsteffaniak/filebrowser:stable-slim"
+                "bambuvnn/filebrowser:stable-slim",
+                "ghcr.io/bambuvnn/filebrowser:stable-slim"
               ]
             else . end
           ')

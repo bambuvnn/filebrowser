@@ -16,10 +16,10 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/goccy/go-yaml"
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/common/version"
-	"github.com/gtsteffaniak/filebrowser/backend/database/users"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/common/version"
+	"github.com/bambuvnn/filebrowser/backend/database/users"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 
@@ -44,7 +44,7 @@ func Initialize(configFile string) {
 		errmsg := "The provided config file failed validation. "
 		errmsg += "If you are seeing this on a config that worked before, "
 		errmsg += "then check the latest releases for breaking changes. "
-		errmsg += "visit https://github.com/gtsteffaniak/filebrowser/wiki/Full-Config-Example for more information."
+		errmsg += "visit https://github.com/bambuvnn/filebrowser/wiki/Full-Config-Example for more information."
 		logger.Error(errmsg)
 		time.Sleep(5 * time.Second) // allow sleep time before exiting to give docker/kubernetes time before restarting
 		logger.Fatal(err.Error())
@@ -233,7 +233,7 @@ func setupFrontend(generate bool) {
 		Config.Frontend.ExternalLinks = append(Config.Frontend.ExternalLinks, ExternalLink{
 			Text:  fmt.Sprintf("(%v)", version.Version),
 			Title: version.CommitSHA,
-			Url:   "https://github.com/gtsteffaniak/filebrowser/releases/",
+			Url:   "https://github.com/bambuvnn/filebrowser/releases/",
 		})
 		Config.Frontend.ExternalLinks = append(Config.Frontend.ExternalLinks, ExternalLink{
 			Text: "Help",

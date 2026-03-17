@@ -6,14 +6,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/files"
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/preview"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/files"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/preview"
 	"github.com/gtsteffaniak/go-logger/logger"
 
-	_ "github.com/gtsteffaniak/filebrowser/backend/swagger/docs"
+	_ "github.com/bambuvnn/filebrowser/backend/swagger/docs"
 )
 
 // publicDownloadHandler serves the raw content of a file, multiple files, or directory via a public share.

@@ -25,7 +25,7 @@ Thank you for your interest in contributing to FileBrowser Quantum! This guide w
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/gtsteffaniak/filebrowser.git
+git clone https://github.com/bambuvnn/filebrowser.git
 cd filebrowser
 
 # 2. Initial setup - installs dependencies and creates test config
@@ -159,7 +159,7 @@ Types: feat, fix, docs, refactor, test, chore
 
 ## Roadmap
 
-Check the [Project Roadmap](https://github.com/users/gtsteffaniak/projects/4/views/2) to see issues sorted by priority. This helps you understand what features are planned and where you can contribute most effectively.
+Check the [Project Roadmap](https://github.com/users/bambuvnn/projects/4/views/2) to see issues sorted by priority. This helps you understand what features are planned and where you can contribute most effectively.
 
 ## Troubleshooting
 
@@ -203,6 +203,6 @@ Always first enable debug logging in your config file if you have issues.
 
 ### Getting Help
 
-- **Wiki**: [Project Wiki](https://github.com/gtsteffaniak/filebrowser/wiki)
-- **Issues**: [GitHub Issues](https://github.com/gtsteffaniak/filebrowser/issues)
+- **Wiki**: [Project Wiki](https://github.com/bambuvnn/filebrowser/wiki)
+- **Issues**: [GitHub Issues](https://github.com/bambuvnn/filebrowser/issues)
 - **PR Template**: See `.github/PULL_REQUEST_TEMPLATE.md`

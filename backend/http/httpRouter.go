@@ -15,10 +15,10 @@ import (
 	_ "net/http/pprof"
 
 	"github.com/coreos/go-systemd/v22/activation"
-	"github.com/gtsteffaniak/filebrowser/backend/adapters/fs/fileutils"
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
-	"github.com/gtsteffaniak/filebrowser/backend/database/storage/bolt"
-	"github.com/gtsteffaniak/filebrowser/backend/events"
+	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/database/storage/bolt"
+	"github.com/bambuvnn/filebrowser/backend/events"
 	"github.com/gtsteffaniak/go-logger/logger"
 	// http-swagger middleware
 )

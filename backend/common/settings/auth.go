@@ -11,7 +11,7 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	ldap "github.com/go-ldap/ldap/v3"
-	"github.com/gtsteffaniak/filebrowser/backend/common/version"
+	"github.com/bambuvnn/filebrowser/backend/common/version"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

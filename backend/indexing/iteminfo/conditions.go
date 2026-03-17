@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/settings"
 )
 
 const (

@@ -3,8 +3,8 @@ package dbindex
 import (
 	"sync"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/database/crud"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/database/crud"
 )
 
 // StorageBackend is the interface to implement for an indexing storage.

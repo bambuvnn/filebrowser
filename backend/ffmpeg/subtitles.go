@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

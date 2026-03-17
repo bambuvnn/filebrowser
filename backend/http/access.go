@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

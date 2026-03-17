@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
 )
 
 // GetChecksum calculates the checksum of a file using the specified algorithm.

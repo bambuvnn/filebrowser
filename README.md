@@ -1,12 +1,12 @@
 <div align="center">
 
-  [![Go Report Card](https://goreportcard.com/badge/github.com/gtsteffaniak/filebrowser/backend)](https://goreportcard.com/report/github.com/gtsteffaniak/filebrowser/backend)
-  [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/gtsteffaniak/filebrowser/dashboard)
-  [![latest version](https://img.shields.io/github/v/release/gtsteffaniak/filebrowser)](https://github.com/gtsteffaniak/filebrowser/releases)
-  [![DockerHub Pulls](https://img.shields.io/docker/pulls/gtstef/filebrowser?label=latest%20Docker%20pulls)](https://hub.docker.com/r/gtstef/filebrowser)
+  [![Go Report Card](https://goreportcard.com/badge/github.com/bambuvnn/filebrowser/backend)](https://goreportcard.com/report/github.com/bambuvnn/filebrowser/backend)
+  [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/bambuvnn/filebrowser/dashboard)
+  [![latest version](https://img.shields.io/github/v/release/bambuvnn/filebrowser)](https://github.com/bambuvnn/filebrowser/releases)
+  [![DockerHub Pulls](https://img.shields.io/docker/pulls/bambuvnn/filebrowser?label=latest%20Docker%20pulls)](https://hub.docker.com/r/bambuvnn/filebrowser)
   [![Apache-2.0 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-  [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://github.com/gtsteffaniak/filebrowser/wiki/Q&A#is-there-a-way-to-donate-or-support-this-project)
+  [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://github.com/bambuvnn/filebrowser/wiki/Q&A#is-there-a-way-to-donate-or-support-this-project)
 
   <img width="150" src="https://github.com/user-attachments/assets/c40b22c9-33da-47b7-bc4c-ce69bb5cc174" title="Logo">
   <h3>FileBrowser Quantum</h3>
@@ -17,7 +17,7 @@
 
 ## Pinned
 
-:loudspeaker: [New Announcement](https://github.com/gtsteffaniak/filebrowser/discussions/2048)
+:loudspeaker: [New Announcement](https://github.com/bambuvnn/filebrowser/discussions/2048)
 
 :pushpin: [Read The Official Docs](https://filebrowserquantum.com/) (currently english-only)
 
@@ -39,7 +39,7 @@ FileBrowser Quantum is a massive fork of the file browser open-source project wi
   2. ✅ Login support for OIDC, LDAP, JWT, password + 2FA, and proxy.
   3. ✅ Beautiful, Responsive, and Customizable user interface.
   4. ✅ Streamlined configuration via `config.yaml` config file.
-  5. ✅ Ultra-efficient Sqlite [indexing](https://github.com/gtsteffaniak/filebrowser/wiki/Indexing)
+  5. ✅ Ultra-efficient Sqlite [indexing](https://github.com/bambuvnn/filebrowser/wiki/Indexing)
      - Real-time search results as you type.
      - Real-time monitoring and updates in the UI.
      - Search supports file and folder sizes, along with various filters.

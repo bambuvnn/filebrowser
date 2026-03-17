@@ -4,8 +4,8 @@ import (
 	storm "github.com/asdine/storm/v3"
 	"github.com/asdine/storm/v3/q"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/database/dbindex"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/database/dbindex"
 )
 
 type indexingBackend struct {

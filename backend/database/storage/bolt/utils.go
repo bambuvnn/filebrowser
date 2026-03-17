@@ -3,7 +3,7 @@ package bolt
 import (
 	storm "github.com/asdine/storm/v3"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
 )
 
 func get(db *storm.DB, name string, to interface{}) error {

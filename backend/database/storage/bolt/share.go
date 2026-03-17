@@ -6,8 +6,8 @@ import (
 	storm "github.com/asdine/storm/v3"
 	"github.com/asdine/storm/v3/q"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/database/share"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/database/share"
 	"github.com/gtsteffaniak/go-logger/logger"
 )
 

@@ -1,10 +1,10 @@
 package access
 
 import (
-	"github.com/gtsteffaniak/filebrowser/backend/common/errors"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing"
-	"github.com/gtsteffaniak/filebrowser/backend/indexing/iteminfo"
+	"github.com/bambuvnn/filebrowser/backend/common/errors"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/indexing"
+	"github.com/bambuvnn/filebrowser/backend/indexing/iteminfo"
 )
 
 func (s *Storage) CheckChildItemAccess(response *iteminfo.FileInfo, index *indexing.Index, username string) error {

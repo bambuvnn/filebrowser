@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/gtsteffaniak/filebrowser/backend/auth"
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/auth"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
 )
 
 // generateOTPHandler handles the generation of a new TOTP secret and QR code.

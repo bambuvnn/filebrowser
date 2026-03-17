@@ -3,7 +3,7 @@ package iteminfo
 import (
 	"time"
 
-	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
 )
 
 type ItemInfo struct {
