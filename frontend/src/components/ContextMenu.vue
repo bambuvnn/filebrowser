@@ -193,7 +193,7 @@ import { notify } from "@/notify";
 import { resourcesApi } from "@/api";
 import { url } from "@/utils";
 import { copyToClipboard } from "@/utils/clipboard";
-import { buildItemUrl } from "@/utils/url.js";
+import { buildItemUrl, getUserScopeForSource } from "@/utils/url.js";
 
 function isArchivePath(pathOrName) {
   if (!pathOrName || typeof pathOrName !== "string") return false;
@@ -647,7 +647,13 @@ export default {
       const urls = items.map(item => {
         const source = item.source || state.req.source;
         const path = item.path || item.from;
-        const relativePath = buildItemUrl(source, path, true);
+        // Prepend user's scope to create an absolute path URL
+        // This allows users with different scopes (including admin) to access the same URL
+        const userScope = getUserScopeForSource(source);
+        const absolutePath = (userScope && userScope !== "/")
+          ? userScope + path
+          : path;
+        const relativePath = buildItemUrl(source, absolutePath, true);
         return `${window.location.origin}${relativePath}`;
       });
       const text = urls.join('\n');

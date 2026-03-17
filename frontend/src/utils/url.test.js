@@ -40,7 +40,29 @@ vi.mock('@/utils/constants', () => {
   };
 });
 
-import { removePrefix, extractSourceFromPath, getApiPath, getPublicApiPath } from './url.js';
+import { removePrefix, extractSourceFromPath, getApiPath, getPublicApiPath, getUserScopeForSource, stripScopeFromPath } from './url.js';
+
+// Mock state for getUserScopeForSource and stripScopeFromPath tests
+vi.mock('@/store', () => {
+  return {
+    state: {
+      user: {
+        scopes: [
+          { name: 'bambuvn', scope: '/Duc' },
+          { name: 'othersource', scope: '/' },
+        ],
+      },
+      shareInfo: {
+        isShare: false,
+        hash: '',
+      },
+    },
+    getters: {
+      isShare: () => false,
+    },
+    mutations: {},
+  };
+});
 
 describe('testurl', () => {
 
@@ -131,5 +153,49 @@ describe('extractSourceFromPath', () => {
       expect(result.source).toEqual(test.expected.source);
       expect(result.path).toEqual(test.expected.path);
     }
+  });
+});
+
+describe('getUserScopeForSource', () => {
+  it('returns scope for known source', () => {
+    expect(getUserScopeForSource('bambuvn')).toEqual('/Duc');
+  });
+
+  it('returns "/" for admin-like source', () => {
+    expect(getUserScopeForSource('othersource')).toEqual('/');
+  });
+
+  it('returns "/" for unknown source', () => {
+    expect(getUserScopeForSource('nonexistent')).toEqual('/');
+  });
+});
+
+describe('stripScopeFromPath', () => {
+  it('strips scope prefix when path starts with scope', () => {
+    // User Duc navigating to absolute URL /Duc/video.mp4
+    expect(stripScopeFromPath('/Duc/video.mp4', 'bambuvn')).toEqual('/video.mp4');
+  });
+
+  it('does not strip when scope is "/"', () => {
+    // Admin navigating to absolute URL
+    expect(stripScopeFromPath('/Duc/video.mp4', 'othersource')).toEqual('/Duc/video.mp4');
+  });
+
+  it('does not strip when path does not start with scope', () => {
+    // Different user's scope doesn't match
+    expect(stripScopeFromPath('/Other/file.txt', 'bambuvn')).toEqual('/Other/file.txt');
+  });
+
+  it('returns "/" when path equals scope exactly', () => {
+    expect(stripScopeFromPath('/Duc', 'bambuvn')).toEqual('/');
+  });
+
+  it('handles nested paths with scope-like folder names', () => {
+    // User Duc has folder /Duc/Duc/file.txt → stripped to /Duc/file.txt
+    expect(stripScopeFromPath('/Duc/Duc/file.txt', 'bambuvn')).toEqual('/Duc/file.txt');
+  });
+
+  it('returns path unchanged for unknown source', () => {
+    expect(stripScopeFromPath('/some/path.txt', 'nonexistent')).toEqual('/some/path.txt');
   });
 });

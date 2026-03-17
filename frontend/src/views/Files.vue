@@ -26,7 +26,7 @@ import ThreeJsViewer from "./files/ThreeJs.vue";
 import { state, mutations, getters } from "@/store";
 import { url } from "@/utils";
 import router from "@/router";
-import { extractSourceFromPath } from "@/utils/url";
+import { extractSourceFromPath, stripScopeFromPath } from "@/utils/url";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 function directoryListingHasMediaChildren(req) {
@@ -465,7 +465,9 @@ export default {
 
           this.loadingProgress = 10;
           const fetchSource = decodeURIComponent(result.source);
-          const fetchPath = decodeURIComponent(result.path);
+          // Strip the user's scope prefix from the path if present
+          // This handles absolute URLs created by Copy URL from users with different scopes
+          const fetchPath = stripScopeFromPath(decodeURIComponent(result.path), fetchSource);
 
           const res = await fetchAuthItemWithParent(fetchSource, fetchPath);
           if (state.sources.count > 1) {

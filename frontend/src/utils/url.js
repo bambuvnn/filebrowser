@@ -18,6 +18,8 @@ export default {
   encodedPath,
   trimSlashes,
   getPublicApiPath,
+  getUserScopeForSource,
+  stripScopeFromPath,
 };
 
 export function removeLastDir(url) {
@@ -177,6 +179,26 @@ export function extractSourceFromPath(url) {
   path = removePrefix(path, `/files/${source}`);
 
   return { source, path };
+}
+
+// Get the current user's scope for a given source identifier
+// Returns "/" if scope not found (e.g., admin or single source)
+export function getUserScopeForSource(sourceIdentifier) {
+  const scopes = state.user?.scopes || [];
+  const found = scopes.find(s => s.name === sourceIdentifier);
+  return found?.scope || "/";
+}
+
+// Strip the user's scope prefix from a path if present
+// This is used when navigating to absolute URLs created by other users
+// to prevent the backend from double-applying the scope
+export function stripScopeFromPath(path, sourceIdentifier) {
+  const userScope = getUserScopeForSource(sourceIdentifier);
+  if (userScope && userScope !== "/" && path.startsWith(userScope)) {
+    const stripped = path.slice(userScope.length);
+    return stripped || "/";
+  }
+  return path;
 }
 
 export function buildItemUrl(source, path, includeBaseURL = false) {
