@@ -61,3 +61,5 @@ backend/custom.css
 # Runtime cache directories created by tests/application
 backend/preview/heic/
 backend/preview/thumbnails/
+
+.agent/

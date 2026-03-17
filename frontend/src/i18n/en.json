@@ -128,6 +128,7 @@
     "copyPath": "Copy Path",
     "copyToClipboard": "Copy to clipboard",
     "copyDownloadLinkToClipboard": "Copy download link to clipboard",
+    "copyUrl": "Copy url",
     "moveFile": "Move file",
     "selectMultiple": "Select multiple",
     "switchView": "Switch view",

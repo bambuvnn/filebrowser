@@ -77,6 +77,12 @@
         @action="showInfoPrompt"
       />
       <action
+        v-if="showCopyUrl"
+        icon="link"
+        :label="$t('buttons.copyUrl')"
+        @action="copyItemUrl"
+      />
+      <action
         v-if="showDownload"
         icon="file_download"
         :label="$t('general.download')"
@@ -209,6 +215,7 @@ import { getters, mutations, state } from "@/store";
 import { url } from "@/utils";
 import buttons from "@/utils/buttons";
 import { copyToClipboard } from "@/utils/clipboard";
+import { buildItemUrl } from "@/utils/url.js";
 import { globalVars } from "@/utils/constants.js";
 import downloadFiles from "@/utils/download";
 import { canNativeShare, nativeShareFile } from "@/utils/nativeShare";
@@ -308,6 +315,10 @@ export default {
     showInfo() {
       if (this.showLimitedOptions) return this.selectedCount === 1;
       return !this.showCreate && this.selectedCount === 1;
+    },
+    showCopyUrl() {
+      if (this.showLimitedOptions) return false;
+      return !this.showCreate && !this.isShare && getters.isLoggedIn() && this.selectedCount === 1;
     },
     showDownload() {
       if (this.showLimitedOptions) return false;
@@ -715,6 +726,23 @@ export default {
       mutations.closeTopPrompt();
       const items = this.providedItems;
       downloadFiles(items);
+    },
+    async copyItemUrl() {
+      mutations.closeContextMenus();
+      const items = this.providedItems;
+      const urls = items.map(item => {
+        const source = item.source || state.req.source;
+        const path = item.path || item.from;
+        const relativePath = buildItemUrl(source, path, true);
+        return `${window.location.origin}${relativePath}`;
+      });
+      const text = urls.join(\n);
+      try {
+        await navigator.clipboard.writeText(text);
+        notify.showSuccessToast(this.$t('buttons.copySuccess'));
+      } catch {
+        notify.showErrorToast(this.$t('buttons.copyFailed'));
+      }
     },
     async sendToApp() {
       mutations.closeTopPrompt();
