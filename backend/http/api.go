@@ -42,7 +42,7 @@ func createApiTokenHandler(w http.ResponseWriter, r *http.Request, d *requestCon
 		return http.StatusBadRequest, fmt.Errorf("api token name must be valid")
 	}
 	if durationStr == "" {
-		return http.StatusBadRequest, fmt.Errorf("api token duration must be valid")
+		durationStr = "0"
 	}
 
 	// For full tokens (minimal=false), permissions are required in the claim
@@ -182,6 +182,10 @@ func listApiTokensHandler(w http.ResponseWriter, r *http.Request, d *requestCont
 	}
 	AuthTokensFrontend := make([]AuthTokenFrontend, 0, len(d.user.Tokens))
 	for name, token := range d.user.Tokens {
+		expiresAt := int64(0)
+		if token.RegisteredClaims.ExpiresAt != nil {
+			expiresAt = token.RegisteredClaims.ExpiresAt.Unix()
+		}
 		AuthTokensFrontend = append(AuthTokensFrontend, AuthTokenFrontend{
 			Token:       token.Token,
 			Name:        name,
