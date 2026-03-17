@@ -36,11 +36,21 @@ type SourceRuleMap map[string]RuleMap
 
 type StringSet map[string]struct{}
 
+// RefreshToken represents a long-lived refresh token for "Remember Me" functionality
+type RefreshToken struct {
+	TokenHash string    `json:"tokenHash"` // SHA256 hash of the actual token
+	UserID    uint      `json:"userId"`
+	ExpiresAt time.Time `json:"expiresAt"`
+	CreatedAt time.Time `json:"createdAt"`
+	UserAgent string    `json:"userAgent"` // browser info for auditing
+}
+
 type dbStorage struct {
-	AllRules      SourceRuleMap       `json:"all_rules"`
-	Groups        GroupMap            `json:"groups"`
-	RevokedTokens map[string]struct{} `json:"revoked_tokens"` // set of revoked token hashes
-	HashedTokens  map[string]uint     `json:"hashed_tokens"`  // maps token hash → user ID
+	AllRules      SourceRuleMap          `json:"all_rules"`
+	Groups        GroupMap               `json:"groups"`
+	RevokedTokens map[string]struct{}    `json:"revoked_tokens"`  // set of revoked token hashes
+	HashedTokens  map[string]uint        `json:"hashed_tokens"`   // maps token hash → user ID
+	RefreshTokens map[string]RefreshToken `json:"refresh_tokens"` // tokenHash → RefreshToken
 }
 
 // RuleSet groups users and groups for allow/deny lists.
@@ -75,12 +85,13 @@ type GroupMap map[string]StringSet
 // Storage manages access rules and group membership.
 type Storage struct {
 	mux           sync.RWMutex
-	AllRules      SourceRuleMap       // AllRules[sourcePath][indexPath] - in-memory authoritative state
-	Groups        GroupMap            // key: group name, value: set of usernames - in-memory authoritative state
-	RevokedTokens map[string]struct{} // set of revoked token hashes - in-memory authoritative state
-	HashedTokens  map[string]uint     // maps token hash → user ID - in-memory authoritative state
-	DB            *storm.DB           // Optional: DB for persistence
-	Users         *users.Storage      // Reference to users storage
+	AllRules      SourceRuleMap          // AllRules[sourcePath][indexPath] - in-memory authoritative state
+	Groups        GroupMap               // key: group name, value: set of usernames - in-memory authoritative state
+	RevokedTokens map[string]struct{}    // set of revoked token hashes - in-memory authoritative state
+	HashedTokens  map[string]uint        // maps token hash → user ID - in-memory authoritative state
+	RefreshTokens map[string]RefreshToken // tokenHash → RefreshToken - in-memory authoritative state
+	DB            *storm.DB              // Optional: DB for persistence
+	Users         *users.Storage         // Reference to users storage
 }
 
 // SaveToDB persists all rules to the DB if DB is set.
@@ -94,6 +105,7 @@ func (s *Storage) SaveToDB() error {
 		Groups:        s.Groups,
 		RevokedTokens: s.RevokedTokens,
 		HashedTokens:  s.HashedTokens,
+		RefreshTokens: s.RefreshTokens,
 	})
 	if err != nil {
 		return err
@@ -144,6 +156,10 @@ func (s *Storage) LoadFromDB() error {
 	if s.HashedTokens == nil {
 		s.HashedTokens = make(map[string]uint)
 	}
+	s.RefreshTokens = storage.RefreshTokens
+	if s.RefreshTokens == nil {
+		s.RefreshTokens = make(map[string]RefreshToken)
+	}
 	s.mux.Unlock()
 	return nil
 }
@@ -161,6 +177,7 @@ func NewStorage(db *storm.DB, usersStore *users.Storage) *Storage {
 		Groups:        make(GroupMap),
 		RevokedTokens: make(map[string]struct{}),
 		HashedTokens:  make(map[string]uint),
+		RefreshTokens: make(map[string]RefreshToken),
 		DB:            db,
 		Users:         usersStore,
 	}
@@ -1318,4 +1335,79 @@ func (s *Storage) RemoveApiToken(tokenString string) error {
 	tokenHash := utils.HashSHA256(tokenString)
 	delete(s.HashedTokens, tokenHash)
 	return s.SaveToDB()
+}
+
+// StoreRefreshToken stores a hashed refresh token for "Remember Me" functionality.
+func (s *Storage) StoreRefreshToken(tokenString string, userID uint, expiresAt time.Time, userAgent string) error {
+	s.mux.Lock()
+	defer s.mux.Unlock()
+	tokenHash := utils.HashSHA256(tokenString)
+	s.RefreshTokens[tokenHash] = RefreshToken{
+		TokenHash: tokenHash,
+		UserID:    userID,
+		ExpiresAt: expiresAt,
+		CreatedAt: time.Now(),
+		UserAgent: userAgent,
+	}
+	return s.SaveToDB()
+}
+
+// ValidateRefreshToken checks if a refresh token is valid (exists and not expired).
+// Returns the RefreshToken if valid, otherwise returns an error.
+func (s *Storage) ValidateRefreshToken(tokenString string) (*RefreshToken, error) {
+	s.mux.RLock()
+	defer s.mux.RUnlock()
+	tokenHash := utils.HashSHA256(tokenString)
+	rt, exists := s.RefreshTokens[tokenHash]
+	if !exists {
+		return nil, fmt.Errorf("refresh token not found")
+	}
+	if time.Now().After(rt.ExpiresAt) {
+		return nil, fmt.Errorf("refresh token expired")
+	}
+	return &rt, nil
+}
+
+// RevokeRefreshToken removes a specific refresh token.
+func (s *Storage) RevokeRefreshToken(tokenString string) error {
+	s.mux.Lock()
+	defer s.mux.Unlock()
+	tokenHash := utils.HashSHA256(tokenString)
+	delete(s.RefreshTokens, tokenHash)
+	return s.SaveToDB()
+}
+
+// RevokeAllRefreshTokensForUser removes all refresh tokens for a given user (all devices).
+func (s *Storage) RevokeAllRefreshTokensForUser(userID uint) error {
+	s.mux.Lock()
+	defer s.mux.Unlock()
+	changed := false
+	for hash, rt := range s.RefreshTokens {
+		if rt.UserID == userID {
+			delete(s.RefreshTokens, hash)
+			changed = true
+		}
+	}
+	if changed {
+		return s.SaveToDB()
+	}
+	return nil
+}
+
+// CleanExpiredRefreshTokens removes all expired refresh tokens.
+func (s *Storage) CleanExpiredRefreshTokens() error {
+	s.mux.Lock()
+	defer s.mux.Unlock()
+	now := time.Now()
+	changed := false
+	for hash, rt := range s.RefreshTokens {
+		if now.After(rt.ExpiresAt) {
+			delete(s.RefreshTokens, hash)
+			changed = true
+		}
+	}
+	if changed {
+		return s.SaveToDB()
+	}
+	return nil
 }

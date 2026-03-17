@@ -78,6 +78,10 @@ export default {
       type: String,
       default: "",
     },
+    rememberMe: {
+      type: Boolean,
+      default: false,
+    },
   },
   async mounted() {
     if (this.generate) {
@@ -125,8 +129,8 @@ export default {
       this.verifyInFlight = true;
       try {
         await authApi.verifyOTP(this.username, this.password, this.code);
-        if (this.redirect !== "") {
-          await authApi.login(this.username, this.password, this.redirect, this.code);
+		if (this.redirect !== "") {
+			await authApi.login(this.username, this.password, this.redirect, this.code, this.rememberMe);
           await initAuth();
           // Wait for navigation so Layout mounts and registers the toast callback before we toast
           await this.$router.push(this.redirect);

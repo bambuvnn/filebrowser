@@ -265,7 +265,8 @@
     "wrongCredentials": "Wrong credentials",
     "failedLogin": "Failed to login",
     "invalidCredentials": "Invalid credentials provided",
-    "passkeyLogin": "Use Passkey"
+	"passkeyLogin": "Use Passkey",
+	"rememberMe": "Remember me"
   },
   "share": {
     "notice": "Note: when a share is a created, it becomes more exposed to the public and has different rules for access. If your share is not securely configured, it may be accessed by anyone.",

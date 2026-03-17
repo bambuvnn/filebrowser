@@ -236,7 +236,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request, d *requestContext) (in
 	if d.user.HasPasskeyMFA() && d.user.TOTPSecret == "" {
 		return http.StatusForbidden, errors.ErrPasskeyMFARequired
 	}
-	return printToken(w, r, d.user)
+	rememberMe := r.URL.Query().Get("rememberMe") == "true"
+	return printTokenWithRememberMe(w, r, d.user, rememberMe)
 }
 
 // logoutHandler handles user logout
@@ -268,6 +269,14 @@ func logoutHandler(w http.ResponseWriter, r *http.Request, d *requestContext) (i
 		MaxAge:   -1,              // Delete cookie
 	}
 	http.SetCookie(w, cookie)
+
+	// Clear the refresh token cookie and revoke ALL refresh tokens for this user (all devices)
+	clearRefreshCookie(w, r)
+	if d.user != nil {
+		if err := store.Access.RevokeAllRefreshTokensForUser(d.user.ID); err != nil {
+			logger.Errorf("Failed to revoke refresh tokens on logout: %v", err)
+		}
+	}
 
 	logoutUrl := fmt.Sprintf("%vlogin", config.Server.BaseURL) // Default fallback
 	if d.user != nil && d.user.LoginMethod == users.LoginMethodProxy {
@@ -367,6 +376,10 @@ func renewHandler(w http.ResponseWriter, r *http.Request, d *requestContext) (in
 }
 
 func printToken(w http.ResponseWriter, r *http.Request, user *users.User) (int, error) {
+	return printTokenWithRememberMe(w, r, user, false)
+}
+
+func printTokenWithRememberMe(w http.ResponseWriter, r *http.Request, user *users.User, rememberMe bool) (int, error) {
 	expires := time.Hour * time.Duration(config.Auth.TokenExpirationHours)
 	tokenString, _, err := auth.MakeSignedTokenAPI(user, "WEB_TOKEN_"+utils.InsecureRandomIdentifier(4), expires, user.Permissions, false)
 	if err != nil {
@@ -382,10 +395,94 @@ func printToken(w http.ResponseWriter, r *http.Request, user *users.User) (int, 
 
 	setSessionCookie(w, r, tokenString, expiresTime)
 
+	// If Remember Me is enabled, generate and set a long-lived refresh token
+	if rememberMe {
+		const refreshTokenDays = 90
+		refreshTokenString, err := utils.SecureRandomToken(32)
+		if err != nil {
+			logger.Errorf("Failed to generate refresh token: %v", err)
+		} else {
+			refreshExpiry := time.Now().Add(time.Hour * 24 * refreshTokenDays)
+			userAgent := r.Header.Get("User-Agent")
+			if err := store.Access.StoreRefreshToken(refreshTokenString, user.ID, refreshExpiry, userAgent); err != nil {
+				logger.Errorf("Failed to store refresh token: %v", err)
+			} else {
+				setRefreshCookie(w, r, refreshTokenString, refreshExpiry)
+			}
+		}
+	}
+
 	// Still return token in body for backward compatibility and state management
 	w.Header().Set("Content-Type", "text/plain")
 	if _, err := w.Write([]byte(tokenString)); err != nil {
 		return 401, errors.ErrUnauthorized
+	}
+	return 0, nil
+}
+
+// refreshHandler handles token refresh using a long-lived refresh token cookie.
+// @Summary Refresh session using refresh token
+// @Description Uses the refresh token cookie to generate a new session token without re-authentication.
+// @Tags Auth
+// @Produce json
+// @Success 200 {string} string "New JWT token for authentication"
+// @Failure 401 {object} map[string]string "Unauthorized - invalid or expired refresh token"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /api/auth/refresh [post]
+func refreshHandler(w http.ResponseWriter, r *http.Request, d *requestContext) (int, error) {
+	// Extract refresh token from cookie
+	refreshCookie, err := r.Cookie("filebrowser_quantum_refresh")
+	if err != nil || refreshCookie.Value == "" {
+		return http.StatusUnauthorized, fmt.Errorf("no refresh token provided")
+	}
+	oldRefreshToken := refreshCookie.Value
+
+	// Validate the refresh token
+	rt, err := store.Access.ValidateRefreshToken(oldRefreshToken)
+	if err != nil {
+		clearRefreshCookie(w, r)
+		return http.StatusUnauthorized, fmt.Errorf("invalid refresh token: %v", err)
+	}
+
+	// Get the user
+	user, err := store.Users.Get(rt.UserID)
+	if err != nil {
+		clearRefreshCookie(w, r)
+		return http.StatusUnauthorized, fmt.Errorf("user not found")
+	}
+
+	// Revoke the old refresh token (rotation)
+	if err := store.Access.RevokeRefreshToken(oldRefreshToken); err != nil {
+		logger.Errorf("Failed to revoke old refresh token: %v", err)
+	}
+
+	// Generate new session token
+	expires := time.Hour * time.Duration(config.Auth.TokenExpirationHours)
+	tokenString, _, err := auth.MakeSignedTokenAPI(user, "WEB_TOKEN_"+utils.InsecureRandomIdentifier(4), expires, user.Permissions, false)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("failed to generate session token")
+	}
+	expiresTime := time.Now().Add(expires).Add(time.Minute * 30)
+	setSessionCookie(w, r, tokenString, expiresTime)
+
+	// Generate new refresh token (rotation)
+	const refreshTokenDays = 90
+	newRefreshToken, err := utils.SecureRandomToken(32)
+	if err != nil {
+		logger.Errorf("Failed to generate new refresh token: %v", err)
+	} else {
+		refreshExpiry := time.Now().Add(time.Hour * 24 * refreshTokenDays)
+		userAgent := r.Header.Get("User-Agent")
+		if err := store.Access.StoreRefreshToken(newRefreshToken, user.ID, refreshExpiry, userAgent); err != nil {
+			logger.Errorf("Failed to store new refresh token: %v", err)
+		} else {
+			setRefreshCookie(w, r, newRefreshToken, refreshExpiry)
+		}
+	}
+
+	w.Header().Set("Content-Type", "text/plain")
+	if _, err := w.Write([]byte(tokenString)); err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("failed to write response")
 	}
 	return 0, nil
 }
@@ -449,6 +546,43 @@ func setSessionCookie(w http.ResponseWriter, r *http.Request, token string, expi
 		Path:     "/",
 		SameSite: http.SameSiteStrictMode, // strict mode prevents cookie from being sent to other domains
 		Expires:  expiresTime,
+	}
+	http.SetCookie(w, cookie)
+}
+
+// setRefreshCookie sets the long-lived refresh token as an HTTP-only cookie
+func setRefreshCookie(w http.ResponseWriter, r *http.Request, token string, expiresTime time.Time) {
+	host := r.Header.Get("X-Forwarded-Host")
+	if host == "" {
+		host = r.Host
+	}
+	cookie := &http.Cookie{
+		Name:     "filebrowser_quantum_refresh",
+		Value:    token,
+		Domain:   strings.Split(host, ":")[0],
+		Path:     "/",
+		SameSite: http.SameSiteStrictMode,
+		HttpOnly: true, // Not accessible via JavaScript - XSS protection
+		Expires:  expiresTime,
+	}
+	http.SetCookie(w, cookie)
+}
+
+// clearRefreshCookie clears the refresh token cookie
+func clearRefreshCookie(w http.ResponseWriter, r *http.Request) {
+	host := r.Header.Get("X-Forwarded-Host")
+	if host == "" {
+		host = r.Host
+	}
+	cookie := &http.Cookie{
+		Name:     "filebrowser_quantum_refresh",
+		Value:    "",
+		Domain:   strings.Split(host, ":")[0],
+		Path:     "/",
+		SameSite: http.SameSiteStrictMode,
+		HttpOnly: true,
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
 	}
 	http.SetCookie(w, cookie)
 }

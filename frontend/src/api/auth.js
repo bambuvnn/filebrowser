@@ -3,7 +3,7 @@ import { notify } from '@/notify'
 import { getApiPath } from '@/utils/url.js'
 
 // POST /api/auth/login
-export async function login(username, password, recaptcha, otp) {
+export async function login(username, password, recaptcha, otp, rememberMe) {
   if (!otp) {
     otp = ''
   }
@@ -13,6 +13,23 @@ export async function login(username, password, recaptcha, otp) {
   if (!password) {
     password = ''
   }
+
+  const params = { username, recaptcha };
+  if (rememberMe) {
+    params.rememberMe = 'true';
+  }
+  let apiPath = getApiPath('auth/login', params);
+  const res = await fetch(apiPath, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'X-Password': encodeURIComponent(password),
+      'X-Secret': otp,
+    }
+  });
+
+  const bodyText = await res.text();
+  let body;
 
   try {
     const params = { username, recaptcha };
