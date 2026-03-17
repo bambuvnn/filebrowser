@@ -215,11 +215,11 @@ import { getters, mutations, state } from "@/store";
 import { url } from "@/utils";
 import buttons from "@/utils/buttons";
 import { copyToClipboard } from "@/utils/clipboard";
-import { buildItemUrl } from "@/utils/url.js";
+import { buildItemUrl, getUserScopeForSource } from "@/utils/url.js";
 import { globalVars } from "@/utils/constants.js";
 import downloadFiles from "@/utils/download";
 import { canNativeShare, nativeShareFile } from "@/utils/nativeShare";
-import { isRichTextPreviewMimeType } from "@/utils/mimetype";
+import { isRichTextPreviewMimeType } from "@/utils/mimetype"; (feat: Implement scope-aware path handling for URL generation and interpretation to support multi-user environments.)
 
 function isArchivePath(pathOrName) {
   if (!pathOrName || typeof pathOrName !== "string") return false;
@@ -733,7 +733,13 @@ export default {
       const urls = items.map(item => {
         const source = item.source || state.req.source;
         const path = item.path || item.from;
-        const relativePath = buildItemUrl(source, path, true);
+        // Prepend user's scope to create an absolute path URL
+        // This allows users with different scopes (including admin) to access the same URL
+        const userScope = getUserScopeForSource(source);
+        const absolutePath = (userScope && userScope !== "/")
+          ? userScope + path
+          : path;
+        const relativePath = buildItemUrl(source, absolutePath, true);
         return `${window.location.origin}${relativePath}`;
       });
       const text = urls.join(\n);
