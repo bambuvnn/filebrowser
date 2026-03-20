@@ -62,3 +62,9 @@ backend/preview/heic/
 backend/preview/thumbnails/
 
 .agent/
+.gitnexus
+.claude
+
+AGENTS.md
+
+CLAUDE.md

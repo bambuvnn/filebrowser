@@ -44,3 +44,13 @@ func GenerateKey() string {
 	}
 	return string(b)
 }
+
+// SecureRandomToken generates a cryptographically secure random token string (hex encoded).
+func SecureRandomToken(byteLength int) (string, error) {
+	b := make([]byte, byteLength)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
+}

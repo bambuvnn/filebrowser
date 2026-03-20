@@ -13,6 +13,7 @@ import (
 
 	"github.com/bambuvnn/filebrowser/backend/adapters/fs/fileutils"
 	"github.com/bambuvnn/filebrowser/backend/common/settings"
+	"github.com/bambuvnn/filebrowser/backend/common/utils"
 	"github.com/bambuvnn/filebrowser/backend/common/version"
 	"github.com/bambuvnn/filebrowser/backend/database/storage"
 	"github.com/bambuvnn/filebrowser/backend/database/storage/bolt"
