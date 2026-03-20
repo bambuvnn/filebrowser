@@ -5,6 +5,7 @@ import Files from "@/views/Files.vue";
 import Settings from "@/views/Settings.vue";
 import Errors from "@/views/Errors.vue";
 import Tools from "@/views/Tools.vue";
+import Trash from "@/views/Trash.vue";
 import { globalVars } from "@/utils/constants";
 import { getters, state } from "@/store";
 import { mutations } from "@/store";
@@ -30,6 +31,7 @@ const titles = {
   NotFound: i18n.global.t("errors.notFound"),
   ShareNotFound: i18n.global.t("errors.shareNotFound"),
   InternalServerError: i18n.global.t("errors.internal"),
+  Trash: i18n.global.t("trash.title"),
 };
 
 const routes: RouteRecordRaw[] = [
@@ -89,6 +91,20 @@ const routes: RouteRecordRaw[] = [
         path: "",
         name: "ChildTool",
         component: Tools,
+      },
+    ],
+  },
+  {
+    path: "/trash",
+    component: Layout,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "",
+        name: "Trash",
+        component: Trash,
       },
     ],
   },

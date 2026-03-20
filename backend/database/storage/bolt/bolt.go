@@ -8,6 +8,7 @@ import (
 	"github.com/bambuvnn/filebrowser/backend/database/access"
 	"github.com/bambuvnn/filebrowser/backend/database/dbindex"
 	"github.com/bambuvnn/filebrowser/backend/database/share"
+	"github.com/bambuvnn/filebrowser/backend/database/trash"
 	"github.com/bambuvnn/filebrowser/backend/database/users"
 )
 
@@ -20,6 +21,7 @@ type BoltStore struct {
 	Settings *settings.Storage
 	Access   *access.Storage
 	Indexing *dbindex.Storage
+	Trash    *trash.Storage
 }
 
 // NewStorage creates a storage.Storage based on Bolt DB.
@@ -36,5 +38,6 @@ func NewStorage(db *storm.DB) (*BoltStore, error) {
 		Settings: settings.NewStorage(settingsBackend{db: db}),
 		Access:   access.NewStorage(db, userStore),
 		Indexing: dbindex.NewStorage(indexingBackend{db: db}),
+		Trash:    trash.NewStorage(&trashBackend{db: db}),
 	}, nil
 }

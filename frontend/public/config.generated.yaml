@@ -126,9 +126,6 @@ frontend:
   disableDefaultLinks: false              # disable default links in the sidebar
   disableUsedPercentage: false            # disable used percentage for the sources in the sidebar
   externalLinks:
-    - text: "(untracked)"                 # the text to display on the link  validate:required
-      title: "untracked"                  # the title to display on hover
-      url: "https://github.com/bambuvnn/filebrowser/releases/" # the url to link to  validate:required
     - text: "Help"                        # the text to display on the link  validate:required
       title: ""                           # the title to display on hover
       url: "help prompt"                  # the url to link to  validate:required

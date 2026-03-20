@@ -945,5 +945,29 @@
     "documentDownload": "Document Download - Complete",
     "editorSuccess": "Editor Initialization - Success! All steps completed.",
     "setupError": "Setup Error"
+  },
+  "trash": {
+    "title": "Trash",
+    "name": "Name",
+    "originalPath": "Original Path",
+    "deletedAt": "Deleted At",
+    "expiresAt": "Expires At",
+    "owner": "Owner",
+    "restore": "Restore",
+    "deletePermanently": "Delete Permanently",
+    "empty": "Trash is empty",
+    "allUsers": "Show all users' items",
+    "confirmDeleteTitle": "Delete Permanently",
+    "confirmDeleteSingle": "Are you sure you want to permanently delete this item? This cannot be undone.",
+    "confirmDeleteMultiple": "Are you sure you want to permanently delete {count} item(s)? This cannot be undone.",
+    "restoreSuccess": "Item(s) restored successfully!",
+    "deleteSuccess": "Item(s) permanently deleted!",
+    "restoreFailed": "Failed to restore item(s)",
+    "deleteFailed": "Failed to delete item(s)",
+    "select": "Select",
+    "selectAll": "Select all",
+    "unselectAll": "Unselect all",
+    "itemsSelected": "{count} item(s) selected",
+    "movedToTrash": "Moved to trash"
   }
 }

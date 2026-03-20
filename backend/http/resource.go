@@ -148,10 +148,29 @@ func resourceDeleteHandler(w http.ResponseWriter, r *http.Request, d *requestCon
 
 	path := r.URL.Query().Get("path")
 	source := r.URL.Query().Get("source")
+	permanent := r.URL.Query().Get("permanent") == "true"
 
 	if path == "/" {
 		return http.StatusForbidden, fmt.Errorf("cannot delete your user's root directory")
 	}
+
+	if !permanent {
+		// Soft delete: resolve full index path and move to trash
+		idx := indexing.GetIndex(source)
+		if idx == nil {
+			return http.StatusNotFound, fmt.Errorf("source %s not found", source)
+		}
+		userScope, err := d.user.GetScopeForSourceName(source)
+		if err != nil {
+			return http.StatusForbidden, err
+		}
+		fullIndexPath := utils.JoinPathAsUnix(userScope, path)
+		if err := moveItemsToTrash([]TrashMoveItem{{Source: source, Path: fullIndexPath}}, d.user.Username); err != nil {
+			return http.StatusInternalServerError, err
+		}
+		return http.StatusOK, nil
+	}
+
 	fileInfo, err := files.FileInfoFaster(utils.FileOptions{
 		Path:       path,
 		Source:     source,
@@ -234,6 +253,8 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 		}
 	}
 
+	permanent := r.URL.Query().Get("permanent") == "true"
+
 	// Parse request body
 	var items []BulkDeleteItem
 	if err := json.NewDecoder(r.Body).Decode(&items); err != nil {
@@ -272,6 +293,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 		}
 
 		if d.share != nil {
+			// Share context: always permanent delete (shares are revoked per spec)
 			sourceName := d.share.GetSourceName()
 			if sourceName == "" {
 				return http.StatusNotFound, fmt.Errorf("source not available")
@@ -324,7 +346,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 			}
 
 			// Check user scope for this source
-			_, err := filePermUser.GetScopeForSourceName(item.Source)
+			userScope, err := filePermUser.GetScopeForSourceName(item.Source)
 			if err != nil {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,
@@ -344,31 +366,44 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 				continue
 			}
 
-			// Get file info
-			fileInfo, err := files.FileInfoFaster(utils.FileOptions{
-				FollowSymlinks: true,
-				Path:           item.Path,
-				Source:         item.Source,
-				ShowHidden:     true,
-			}, store.Access, filePermUser, store.Share)
-			if err != nil {
-				response.Failed = append(response.Failed, BulkDeleteItem{
-					Source:  item.Source,
-					Path:    item.Path,
-					Message: err.Error(),
-				})
-				continue
+			if !permanent {
+				// Soft delete: move to trash
+				fullIndexPath := utils.JoinPathAsUnix(userScope, item.Path)
+				if err := moveItemsToTrash([]TrashMoveItem{{Source: item.Source, Path: fullIndexPath}}, d.user.Username); err != nil {
+					response.Failed = append(response.Failed, BulkDeleteItem{
+						Source:  item.Source,
+						Path:    item.Path,
+						Message: err.Error(),
+					})
+					continue
+				}
+			} else {
+				// Permanent delete
+				fileInfo, err := files.FileInfoFaster(utils.FileOptions{
+					FollowSymlinks: true,
+					Path:           idx.MakeIndexPath(item.Path, false),
+					Source:         item.Source,
+					ShowHidden:     true,
+				}, store.Access, filePermUser, store.Share)
+				if err != nil {
+					response.Failed = append(response.Failed, BulkDeleteItem{
+						Source:  item.Source,
+						Path:    item.Path,
+						Message: err.Error(),
+					})
+					continue
+				}
+				err = files.DeleteFiles(item.Source, fileInfo.RealPath, fileInfo.Type == "directory")
+				if err != nil {
+					response.Failed = append(response.Failed, BulkDeleteItem{
+						Source:  item.Source,
+						Path:    item.Path,
+						Message: err.Error(),
+					})
+					continue
+				}
+				preview.DelThumbs(r.Context(), *fileInfo)
 			}
-			err = files.DeleteFiles(item.Source, fileInfo.RealPath, fileInfo.Type == "directory")
-			if err != nil {
-				response.Failed = append(response.Failed, BulkDeleteItem{
-					Source:  item.Source,
-					Path:    item.Path,
-					Message: err.Error(),
-				})
-				continue
-			}
-			preview.DelThumbs(r.Context(), *fileInfo)
 		}
 		// Success
 		response.Succeeded = append(response.Succeeded, item)

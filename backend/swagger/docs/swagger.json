@@ -3045,6 +3045,124 @@
                 }
             }
         },
+        "/api/trash": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "List trash items",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Admin only: list all users' trash items",
+                        "name": "all",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/http.TrashItemResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "Permanently delete trash items",
+                "parameters": [
+                    {
+                        "description": "IDs of trash items to permanently delete",
+                        "name": "ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/http.TrashDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/trash/move": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "Move items to trash",
+                "parameters": [
+                    {
+                        "description": "Items to move to trash",
+                        "name": "items",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/http.TrashMoveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/trash/restore": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "Restore trash items",
+                "parameters": [
+                    {
+                        "description": "IDs of trash items to restore",
+                        "name": "ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/http.TrashRestoreRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/api/users": {
             "get": {
                 "description": "Returns a user's details based on their ID, or all users if no id is provided.",
@@ -4570,6 +4688,83 @@
                 "viewMode": {
                     "description": "default view mode for anonymous users: \"list\", \"compact\", \"normal\", \"gallery\"",
                     "type": "string"
+                }
+            }
+        },
+        "http.TrashDeleteRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "http.TrashItemResponse": {
+            "type": "object",
+            "properties": {
+                "deletedAt": {
+                    "description": "RFC3339",
+                    "type": "string"
+                },
+                "expiresAt": {
+                    "description": "RFC3339",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isDir": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "originalPath": {
+                    "type": "string"
+                },
+                "sourceName": {
+                    "type": "string"
+                },
+                "username": {
+                    "description": "only shown to admin",
+                    "type": "string"
+                }
+            }
+        },
+        "http.TrashMoveItem": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "description": "full index path (including user scope)",
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                }
+            }
+        },
+        "http.TrashMoveRequest": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/http.TrashMoveItem"
+                    }
+                }
+            }
+        },
+        "http.TrashRestoreRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

@@ -43,6 +43,10 @@ func StartHttp(ctx context.Context, storage *bolt.BoltStore, shutdownComplete ch
 	store = storage
 	config = &settings.Config
 	var err error
+
+	// Start trash auto-purge scheduler
+	startTrashScheduler(ctx)
+
 	// Start pprof server in a separate goroutine
 	if settings.Env.IsDevMode {
 		go func() {
@@ -134,6 +138,14 @@ func StartHttp(ctx context.Context, storage *bolt.BoltStore, shutdownComplete ch
 	// Legacy routes (backwards compatibility)
 	api.HandleFunc("GET /raw", withUser(downloadHandler))
 	publicApi.HandleFunc("GET /raw", withHashFile(publicDownloadHandler))
+
+	// ========================================
+	// Trash Routes - /api/trash/
+	// ========================================
+	api.HandleFunc("GET /trash", withUser(trashListHandler))
+	api.HandleFunc("POST /trash/move", withUser(trashMoveHandler))
+	api.HandleFunc("POST /trash/restore", withUser(trashRestoreHandler))
+	api.HandleFunc("DELETE /trash", withUser(trashDeleteHandler))
 
 	// ========================================
 	// Access Routes - /api/access/

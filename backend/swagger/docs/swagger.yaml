@@ -238,6 +238,57 @@ definitions:
           "gallery"'
         type: string
     type: object
+  http.TrashDeleteRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  http.TrashItemResponse:
+    properties:
+      deletedAt:
+        description: RFC3339
+        type: string
+      expiresAt:
+        description: RFC3339
+        type: string
+      id:
+        type: string
+      isDir:
+        type: boolean
+      name:
+        type: string
+      originalPath:
+        type: string
+      sourceName:
+        type: string
+      username:
+        description: only shown to admin
+        type: string
+    type: object
+  http.TrashMoveItem:
+    properties:
+      path:
+        description: full index path (including user scope)
+        type: string
+      source:
+        type: string
+    type: object
+  http.TrashMoveRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/http.TrashMoveItem'
+        type: array
+    type: object
+  http.TrashRestoreRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
   http.archiveCreateRequest:
     properties:
       compression:
@@ -4158,6 +4209,81 @@ paths:
       summary: Search Files
       tags:
       - Tools
+  /api/trash:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: IDs of trash items to permanently delete
+        in: body
+        name: ids
+        required: true
+        schema:
+          $ref: '#/definitions/http.TrashDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Permanently delete trash items
+      tags:
+      - Trash
+    get:
+      parameters:
+      - description: 'Admin only: list all users'' trash items'
+        in: query
+        name: all
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.TrashItemResponse'
+            type: array
+      summary: List trash items
+      tags:
+      - Trash
+  /api/trash/move:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Items to move to trash
+        in: body
+        name: items
+        required: true
+        schema:
+          $ref: '#/definitions/http.TrashMoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Move items to trash
+      tags:
+      - Trash
+  /api/trash/restore:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: IDs of trash items to restore
+        in: body
+        name: ids
+        required: true
+        schema:
+          $ref: '#/definitions/http.TrashRestoreRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Restore trash items
+      tags:
+      - Trash
   /api/users:
     delete:
       consumes:

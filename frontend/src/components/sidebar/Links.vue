@@ -253,16 +253,35 @@ export default {
       return state.shareInfo?.path || "/";
     },
     sidebarLinksToDisplay() {
-      // If viewing a share, use share's links
+      // If viewing a share, use share's links (no Trash in share context)
       if (getters.isShare() && state.shareInfo?.sidebarLinks && state.shareInfo.sidebarLinks.length > 0) {
         return state.shareInfo.sidebarLinks;
       }
-      // If user has custom links, use those
+
+      // Build the base link list
+      let links;
       if (this.hasCustomLinks) {
-        return this.user.sidebarLinks;
+        links = [...this.user.sidebarLinks];
+      } else {
+        links = this.getDefaultLinks();
       }
-      // Otherwise, return default links (sources)
-      return this.getDefaultLinks();
+
+      // Always inject Trash link at the end for authenticated non-share users
+      if (!getters.isShare() && this.isLoggedIn) {
+        const trashLink = {
+          name: this.$t('trash.title'),
+          category: 'custom',
+          target: '/trash',
+          icon: 'delete',
+        };
+        // Avoid duplicate if user has already manually added a /trash link
+        const alreadyHasTrash = links.some(l => l.target === '/trash');
+        if (!alreadyHasTrash) {
+          links.push(trashLink);
+        }
+      }
+
+      return links;
     },
     // List all source names for the dropdown menu
     sourceNames() {
