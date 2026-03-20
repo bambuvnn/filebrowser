@@ -20,24 +20,6 @@ func CheckErr(source string, err error) {
 	}
 }
 
-func GenerateKey() string {
-	b := make([]byte, 64)
-	_, err := rand.Read(b)
-	if err != nil {
-		return ""
-	}
-	return string(b)
-}
-
-// SecureRandomToken generates a cryptographically secure random token string (base64url encoded).
-func SecureRandomToken(byteLength int) (string, error) {
-	b := make([]byte, byteLength)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(b), nil
-}
 
 // CapitalizeFirst returns the input string with the first letter capitalized.
 func CapitalizeFirst(s string) string {
