@@ -11,6 +11,7 @@ import Layout from "@/views/Layout.vue";
 import Login from "@/views/Login.vue";
 import Settings from "@/views/Settings.vue";
 import Tools from "@/views/Tools.vue";
+import Trash from "@/views/Trash.vue";
 
 const translate = (key: string): string => i18n.global.t(key) as string;
 
@@ -28,6 +29,7 @@ const titles: Record<string, string> = {
   GlobalSettings: translate("settings.globalSettings"),
   Users: translate("general.users"),
   User: translate("general.user"),
+  Trash: translate("trash.title"),
   Forbidden: translate("errors.forbidden"),
   NotFound: translate("errors.notFound"),
   ShareNotFound: translate("errors.shareNotFound"),
@@ -91,6 +93,20 @@ const routes: RouteRecordRaw[] = [
         path: "",
         name: "ChildTool",
         component: Tools,
+      },
+    ],
+  },
+  {
+    path: "/trash",
+    component: Layout,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "",
+        name: "Trash",
+        component: Trash,
       },
     ],
   },
