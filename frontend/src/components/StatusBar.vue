@@ -65,6 +65,10 @@ export default {
       if (getters.isShare() && state.shareInfo.shareType === "upload") {
         return false;
       }
+      // Trash page has its own status bar
+      if (state.route?.path?.startsWith("/trash")) {
+        return false;
+      }
       return this.currentView === "listingView" || this.isEditorOrMarkdownView;
     },
     isDarkMode() {

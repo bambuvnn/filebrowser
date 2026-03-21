@@ -794,7 +794,7 @@ export default {
 
         // Always toggle - parent component will handle the toggle logic
         // Just emit the index, parent will check current state and toggle
-        this.$emit('select', { index: this.index });
+        this.$emit('select', { index: this.index, originalEvent: event });
       }
     },
     open() {
