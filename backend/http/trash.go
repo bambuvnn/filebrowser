@@ -33,6 +33,7 @@ type TrashItemResponse struct {
 	SourceName   string `json:"sourceName"`
 	OriginalPath string `json:"originalPath"`
 	IsDir        bool   `json:"isDir"`
+	Size         int64  `json:"size"`
 	DeletedAt    string `json:"deletedAt"` // RFC3339
 	ExpiresAt    string `json:"expiresAt"` // RFC3339
 }
@@ -44,6 +45,7 @@ func toTrashItemResponse(item *trash.TrashItem, isAdmin bool) TrashItemResponse 
 		SourceName:   item.SourceName,
 		OriginalPath: item.OriginalPath,
 		IsDir:        item.IsDir,
+		Size:         getTrashItemSize(item.TrashPath, item.IsDir),
 		DeletedAt:    time.Unix(item.DeletedAt, 0).Format(time.RFC3339),
 		ExpiresAt:    item.ExpiresAt().Format(time.RFC3339),
 	}
@@ -51,6 +53,32 @@ func toTrashItemResponse(item *trash.TrashItem, isAdmin bool) TrashItemResponse 
 		resp.Username = item.Username
 	}
 	return resp
+}
+
+// getTrashItemSize calculates the size of a trash item on disk.
+// For files, it returns the file size. For directories, it walks the tree to sum all file sizes.
+func getTrashItemSize(trashPath string, isDir bool) int64 {
+	if !isDir {
+		info, err := os.Stat(trashPath)
+		if err != nil {
+			return 0
+		}
+		return info.Size()
+	}
+	var total int64
+	_ = filepath.WalkDir(trashPath, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return nil
+		}
+		if !d.IsDir() {
+			info, err := d.Info()
+			if err == nil {
+				total += info.Size()
+			}
+		}
+		return nil
+	})
+	return total
 }
 
 // trashListHandler lists trash items for the current user (or all users if admin + ?all=true).

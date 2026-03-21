@@ -65,7 +65,7 @@ export default {
       return getters.showStatusBar();
     },
     showGallerySizeSlider() {
-      return getters.showGallerySizeSlider();
+      return getters.showGallerySizeSlider(); (Update style for Trash page)
     },
     isDarkMode() {
       return getters.isDarkMode();

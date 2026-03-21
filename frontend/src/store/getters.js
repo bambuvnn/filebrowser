@@ -586,6 +586,7 @@ export const getters = {
     if (getters.isShare() && state.shareInfo.shareType === "upload") {
       return false;
     }
+    if ((state.route.path || "").startsWith("/trash")) return false;
     const isAdvancedSearchRoute = (state.route.path || "").startsWith("/tools/advancedSearch");
     return getters.currentView() === "listingView" || getters.isEditorOrMarkdownView() || isAdvancedSearchRoute;
   },
