@@ -4,7 +4,7 @@
     <div class="trash-toolbar-wrapper">
       <div class="trash-toolbar">
         <div class="trash-toolbar-left">
-          <i class="material-icons trash-title-icon">delete</i>
+          <i class="material-symbols trash-title-icon">delete</i>
           <h2>{{ $t("trash.title") }}</h2>
         </div>
 
@@ -33,14 +33,14 @@
               :title="$t('trash.restore')"
               @click="restoreSelected"
             >
-              <i class="material-icons">restore_from_trash</i>
+              <i class="material-symbols">restore_from_trash</i>
             </button>
             <button
               class="action trash-action-btn trash-action-btn--danger"
               :title="$t('trash.deletePermanently')"
               @click="confirmPermanentDelete"
             >
-              <i class="material-icons">delete_forever</i>
+              <i class="material-symbols">delete_forever</i>
             </button>
           </div>
         </div>
@@ -58,7 +58,7 @@
     <!-- Empty state -->
     <div v-else-if="trashItems.length === 0" class="trash-content-area">
       <div class="trash-empty">
-        <i class="material-icons trash-empty-icon">delete_outline</i>
+        <i class="material-symbols-outlined trash-empty-icon">delete</i>
         <h2>{{ $t("trash.empty") }}</h2>
         <p>{{ $t("trash.emptyDescription") || "Items you delete will appear here." }}</p>
       </div>
@@ -80,7 +80,14 @@
         <div class="selection-rectangle"
           :style="rectangleStyle"
         ></div>
-        <!-- Directories Section -->
+        <div v-if="isListLikeView" class="trash-list-header" :class="{ 'dark-mode': isDarkMode }">
+          <span>{{ $t("trash.name") }}</span>
+          <span>{{ $t("trash.originalPath") }}</span>
+          <span>{{ $t("general.size") }}</span>
+          <span>{{ $t("trash.expiresAt") }}</span>
+          <span>{{ $t("trash.deletedAt") }}</span>
+        </div>
+
         <div v-if="numDirs > 0">
           <h2 :class="{'dark-mode': isDarkMode}">{{ $t("general.folders") }}</h2>
         </div>
@@ -90,32 +97,43 @@
           aria-label="Trash Folder Items"
           :class="{ lastGroup: numFiles === 0 }"
         >
-          <item
+          <div
             v-for="item in dirs"
             :key="item.trashId"
-            v-bind:index="item.index"
-            v-bind:name="item.name"
-            v-bind:isDir="true"
-            v-bind:source="item.sourceName"
-            v-bind:modified="item.deletedAt"
-            v-bind:type="'directory'"
-            v-bind:size="item.fileSize"
-            v-bind:path="item.originalPath"
-            v-bind:reducedOpacity="false"
-            v-bind:hasPreview="false"
-            v-bind:hasDuration="false"
-            v-bind:isShared="false"
-            v-bind:updateGlobalState="false"
-            v-bind:isSelectedProp="selectedIds.has(item.trashId)"
-            v-bind:clickable="false"
-            v-bind:disableContextMenu="true"
-            @select="handleItemSelect($event, item)"
-            @selectRange="handleSelectRange($event)"
+            class="trash-item-row"
+            :class="{ 'row-selected': selectedIds.has(item.trashId) }"
+            :data-trash-id="item.trashId"
+            :data-trash-index="item.index"
+            @click="handleRowClick($event, item)"
             @contextmenu.prevent.stop="openTrashContextMenu($event, item)"
-          />
+          >
+            <item
+              v-bind:index="item.index"
+              v-bind:name="item.name"
+              v-bind:isDir="true"
+              v-bind:source="item.sourceName"
+              v-bind:modified="item.deletedAt"
+              v-bind:type="'directory'"
+              v-bind:size="item.fileSize"
+              v-bind:path="item.originalPath"
+              v-bind:reducedOpacity="false"
+              v-bind:hasPreview="false"
+              v-bind:hasDuration="false"
+              v-bind:isShared="false"
+              v-bind:updateGlobalState="false"
+              v-bind:isSelectedProp="selectedIds.has(item.trashId)"
+              v-bind:clickable="false"
+              v-bind:disableContextMenu="true"
+              @select="handleItemSelect($event, item)"
+              @selectRange="handleSelectRange($event)"
+            />
+            <code class="trash-col trash-path" :title="item.originalPath">{{ item.originalPath }}</code>
+            <span class="trash-col trash-size">{{ formatSize(item.fileSize) }}</span>
+            <time class="trash-col trash-expires" :datetime="item.expiresAt" :class="{ 'expires-soon': isExpiringSoon(item.expiresAt) }">{{ formatDate(item.expiresAt) }}</time>
+            <time class="trash-col trash-deleted" :datetime="item.deletedAt">{{ formatDate(item.deletedAt) }}</time>
+          </div>
         </div>
 
-        <!-- Files Section -->
         <div v-if="numFiles > 0">
           <h2 :class="{'dark-mode': isDarkMode}">{{ $t("general.files") }}</h2>
         </div>
@@ -125,29 +143,41 @@
           :class="{ lastGroup: numFiles > 0 }"
           aria-label="Trash File Items"
         >
-          <item
+          <div
             v-for="item in files"
             :key="item.trashId"
-            v-bind:index="item.index"
-            v-bind:name="item.name"
-            v-bind:isDir="false"
-            v-bind:source="item.sourceName"
-            v-bind:modified="item.deletedAt"
-            v-bind:type="item.type"
-            v-bind:size="item.fileSize"
-            v-bind:path="item.originalPath"
-            v-bind:reducedOpacity="false"
-            v-bind:hasPreview="false"
-            v-bind:hasDuration="false"
-            v-bind:isShared="false"
-            v-bind:updateGlobalState="false"
-            v-bind:isSelectedProp="selectedIds.has(item.trashId)"
-            v-bind:clickable="false"
-            v-bind:disableContextMenu="true"
-            @select="handleItemSelect($event, item)"
-            @selectRange="handleSelectRange($event)"
+            class="trash-item-row"
+            :class="{ 'row-selected': selectedIds.has(item.trashId) }"
+            :data-trash-id="item.trashId"
+            :data-trash-index="item.index"
+            @click="handleRowClick($event, item)"
             @contextmenu.prevent.stop="openTrashContextMenu($event, item)"
-          />
+          >
+            <item
+              v-bind:index="item.index"
+              v-bind:name="item.name"
+              v-bind:isDir="false"
+              v-bind:source="item.sourceName"
+              v-bind:modified="item.deletedAt"
+              v-bind:type="item.type"
+              v-bind:size="item.fileSize"
+              v-bind:path="item.originalPath"
+              v-bind:reducedOpacity="false"
+              v-bind:hasPreview="false"
+              v-bind:hasDuration="false"
+              v-bind:isShared="false"
+              v-bind:updateGlobalState="false"
+              v-bind:isSelectedProp="selectedIds.has(item.trashId)"
+              v-bind:clickable="false"
+              v-bind:disableContextMenu="true"
+              @select="handleItemSelect($event, item)"
+              @selectRange="handleSelectRange($event)"
+            />
+            <code class="trash-col trash-path" :title="item.originalPath">{{ item.originalPath }}</code>
+            <span class="trash-col trash-size">{{ formatSize(item.fileSize) }}</span>
+            <time class="trash-col trash-expires" :datetime="item.expiresAt" :class="{ 'expires-soon': isExpiringSoon(item.expiresAt) }">{{ formatDate(item.expiresAt) }}</time>
+            <time class="trash-col trash-deleted" :datetime="item.deletedAt">{{ formatDate(item.deletedAt) }}</time>
+          </div>
         </div>
       </div>
     </div>
@@ -176,19 +206,19 @@
           <hr class="divider">
 
           <div class="action clickable" @click="ctxRestore">
-            <i class="material-icons">restore_from_trash</i>
+            <i class="material-symbols">restore_from_trash</i>
             <span>{{ $t('trash.restore') }}</span>
           </div>
           <div class="action clickable" @click="ctxShowInfo" v-if="selectedIds.size === 1">
-            <i class="material-icons">info</i>
+            <i class="material-symbols">info</i>
             <span>{{ $t('general.info') }}</span>
           </div>
           <div class="action clickable" @click="ctxSelectAll">
-            <i class="material-icons">select_all</i>
+            <i class="material-symbols">select_all</i>
             <span>{{ $t('buttons.selectAll') }}</span>
           </div>
           <div class="action clickable trash-ctx-danger" @click="ctxDeletePermanently">
-            <i class="material-icons">delete_forever</i>
+            <i class="material-symbols">delete_forever</i>
             <span>{{ $t('trash.deletePermanently') }}</span>
           </div>
         </div>
@@ -210,7 +240,7 @@
       <div v-if="infoDialog" class="trash-overlay" :class="{ 'trash-dialog-dark': isDarkMode }" @click.self="infoDialog = null">
         <div class="trash-confirm-card trash-info-card">
           <div class="trash-confirm-header">
-            <i class="material-icons" style="color: var(--primaryColor);">info</i>
+            <i class="material-symbols" style="color: var(--primaryColor);">info</i>
             <h3>{{ $t("general.info") }}</h3>
           </div>
           <div class="trash-info-body">
@@ -251,7 +281,7 @@
       <div v-if="confirmDialog" class="trash-overlay" :class="{ 'trash-dialog-dark': isDarkMode }" @click.self="confirmDialog = null">
         <div class="trash-confirm-card">
           <div class="trash-confirm-header">
-            <i class="material-icons trash-confirm-icon">warning</i>
+            <i class="material-symbols trash-confirm-icon">warning</i>
             <h3>{{ $t("trash.confirmDeleteTitle") }}</h3>
           </div>
           <div class="trash-confirm-body">
@@ -267,7 +297,7 @@
               {{ $t("general.cancel") }}
             </button>
             <button class="button button--red" @click="executeDelete">
-              <i class="material-icons" style="font-size: 1.1em; margin-right: 0.3em;">delete_forever</i>
+              <i class="material-symbols" style="font-size: 1.1em; margin-right: 0.3em;">delete_forever</i>
               {{ $t("trash.deletePermanently") }}
             </button>
           </div>
@@ -465,6 +495,9 @@ export default {
     isCardView() {
       return getters.isCardView()
     },
+    isListLikeView() {
+      return ['list', 'compact'].includes(this.listingViewMode)
+    },
     selectedItemsLabel() {
       return this.selectedIds.size === 1
         ? this.$t('files.itemSelected')
@@ -594,6 +627,10 @@ export default {
       return new Date(isoStr).toLocaleString()
     },
 
+    formatSize(size) {
+      return getHumanReadableFilesize(size || 0)
+    },
+
     isExpiringSoon(isoStr) {
       if (!isoStr) return false
       const diff = new Date(isoStr) - Date.now()
@@ -601,6 +638,13 @@ export default {
     },
 
     // ── Selection Logic (mimics ListingView) ──
+
+    handleRowClick(event, item) {
+      // Forward clicks from extra columns (path, size, expires, deleted) to the selection handler.
+      // Clicks originating inside .listing-item are already handled by <item>'s @select emit, so skip them.
+      if (event.target.closest('.listing-item')) return
+      this.handleItemSelect({ originalEvent: event }, item)
+    },
 
     handleItemSelect(event, item) {
       const mouseEvent = event.originalEvent || {}
@@ -674,7 +718,7 @@ export default {
 
     startRectangleSelection(event) {
       // Only start on empty space, not on items, headers, toolbar, or status bar
-      if (event.target.closest('.listing-item') || event.target.closest('.trash-toolbar') || event.target.closest('#status-bar') || event.target.closest('h2')) {
+      if (event.target.closest('.trash-item-row') || event.target.closest('.trash-toolbar') || event.target.closest('#status-bar') || event.target.closest('h2')) {
         return
       }
       if (event.button !== 0) return // left click only
@@ -754,8 +798,8 @@ export default {
       const allItems = [...this.dirs, ...this.files]
       const rectangleSelectedIds = new Set()
 
-      // Query all listing-item elements with data-index
-      const itemElements = this.$refs.listingView.querySelectorAll('.listing-item[data-index]')
+      // Query full-row elements for accurate hit-testing across all columns
+      const itemElements = this.$refs.listingView.querySelectorAll('.trash-item-row[data-trash-id]')
 
       itemElements.forEach((element) => {
         const elementRect = element.getBoundingClientRect()
@@ -775,9 +819,9 @@ export default {
           elementRelativeRect.top < rect.bottom &&
           elementRelativeRect.bottom > rect.top
         ) {
-          const index = parseInt(element.getAttribute('data-index'))
-          if (!isNaN(index) && allItems[index]) {
-            rectangleSelectedIds.add(allItems[index].trashId)
+          const trashId = element.getAttribute('data-trash-id')
+          if (trashId) {
+            rectangleSelectedIds.add(trashId)
           }
         }
       })
@@ -1181,6 +1225,196 @@ export default {
   padding-bottom: 2em;
   position: relative;
 }
+
+/* Force block layout on folder/file-items to avoid flex container width differences */
+.trash-content-area .listing-items.list .folder-items,
+.trash-content-area .listing-items.list .file-items,
+.trash-content-area .listing-items.compact .folder-items,
+.trash-content-area .listing-items.compact .file-items {
+  display: block !important;
+  width: 100%;
+}
+
+/* ── Grid columns definition (shared by header & rows) ──────── */
+.trash-content-area .listing-items.list .trash-list-header,
+.trash-content-area .listing-items.compact .trash-list-header,
+.trash-content-area .listing-items.list .trash-item-row,
+.trash-content-area .listing-items.compact .trash-item-row {
+  display: grid !important;
+  grid-template-columns: minmax(16em, 1fr) minmax(18em, 1.1fr) minmax(8em, 0.6fr) minmax(11em, 0.8fr) minmax(11em, 0.8fr);
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Header styling ─────────────────────────────────────────── */
+.trash-content-area .listing-items.list .trash-list-header,
+.trash-content-area .listing-items.compact .trash-list-header {
+  min-height: var(--item-height, 50px);
+  padding: 0;
+  color: var(--textSecondary);
+  font-size: 0.9em;
+  font-weight: 500;
+  border-bottom: 1px solid var(--divider);
+}
+
+.trash-content-area .listing-items.list .trash-list-header span,
+.trash-content-area .listing-items.compact .trash-list-header span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 1em;
+}
+
+.trash-content-area .listing-items.list .trash-list-header span:first-child,
+.trash-content-area .listing-items.compact .trash-list-header span:first-child {
+  padding-left: 0.75em;
+}
+
+.trash-content-area .listing-items.list .trash-list-header span:nth-child(n + 3),
+.trash-content-area .listing-items.compact .trash-list-header span:nth-child(n + 3) {
+  text-align: end;
+}
+
+/* ── Row wrapper ─────────────────────────────────────────────── */
+.trash-content-area .listing-items.list .trash-item-row,
+.trash-content-area .listing-items.compact .trash-item-row {
+  cursor: pointer;
+  max-width: 100%;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid var(--divider);
+  min-height: var(--item-height, 50px);
+}
+
+.trash-content-area .listing-items.list .trash-item-row:hover,
+.trash-content-area .listing-items.compact .trash-item-row:hover {
+  background: var(--surfaceSecondary);
+}
+
+.trash-content-area .listing-items.list .trash-item-row.row-selected,
+.trash-content-area .listing-items.compact .trash-item-row.row-selected {
+  background: color-mix(in srgb, var(--primaryColor) 85%, transparent);
+}
+
+/* ── listing-item (column 1): name + icon ───────────────────── */
+.trash-content-area .listing-items.list .trash-item-row .listing-item,
+.trash-content-area .listing-items.compact .trash-item-row .listing-item {
+  width: 100% !important;
+  height: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 0.5em !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  contain: none;
+}
+
+/* Cancel ALL hover visual side-effects on .listing-item inside trash rows.
+   .listing-item carries both .clickable (→ transform: scale / box-shadow from styles.css)
+   and the list-mode hover shrink (width: 98% / margin-left: 1% from listing.css).
+   The row-level .trash-item-row:hover already handles the full-row highlight. */
+.trash-content-area .listing-items.list .trash-item-row .listing-item:hover,
+.trash-content-area .listing-items.compact .trash-item-row .listing-item:hover {
+  width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0.5em !important;
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide internal size/modified from ListingItem — shown as separate columns instead */
+.trash-content-area .listing-items.list .trash-item-row :deep(.listing-item .size),
+.trash-content-area .listing-items.list .trash-item-row :deep(.listing-item .modified),
+.trash-content-area .listing-items.compact .trash-item-row :deep(.listing-item .size),
+.trash-content-area .listing-items.compact .trash-item-row :deep(.listing-item .modified) {
+  display: none !important;
+}
+
+/* ── Metadata columns (2-5) ─────────────────────────────────── */
+.trash-content-area .listing-items.list .trash-col,
+.trash-content-area .listing-items.compact .trash-col {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9em;
+  color: var(--textSecondary);
+  padding-right: 1em;
+  text-align: end;
+  align-self: center;
+}
+
+.trash-content-area .listing-items.list .trash-item-row.row-selected .trash-col,
+.trash-content-area .listing-items.compact .trash-item-row.row-selected .trash-col {
+  color: var(--item-selected);
+}
+
+/* Override .trash-col's text-align:end for the path column — specificity must beat (0,4,0) */
+.trash-content-area .listing-items.list .trash-col.trash-path,
+.trash-content-area .listing-items.compact .trash-col.trash-path {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  text-align: start !important;
+  padding-left: 0;
+}
+
+/* ── Hide in non-list modes ──────────────────────────────────── */
+.trash-content-area .listing-items.gallery .trash-list-header,
+.trash-content-area .listing-items.icons .trash-list-header,
+.trash-content-area .listing-items.normal .trash-list-header {
+  display: none;
+}
+
+.trash-content-area .listing-items.gallery .trash-col,
+.trash-content-area .listing-items.icons .trash-col,
+.trash-content-area .listing-items.normal .trash-col {
+  display: none;
+}
+
+.trash-content-area .listing-items.gallery .trash-item-row,
+.trash-content-area .listing-items.icons .trash-item-row,
+.trash-content-area .listing-items.normal .trash-item-row {
+  display: block;
+}
+
+/* ── Responsive breakpoints ──────────────────────────────────── */
+@media (max-width: 1100px) {
+  .trash-content-area .listing-items.list .trash-list-header,
+  .trash-content-area .listing-items.compact .trash-list-header,
+  .trash-content-area .listing-items.list .trash-item-row,
+  .trash-content-area .listing-items.compact .trash-item-row {
+    grid-template-columns: minmax(14em, 1fr) minmax(14em, 1fr) minmax(8em, 0.6fr) minmax(11em, 0.8fr);
+  }
+
+  .trash-content-area .listing-items.list .trash-list-header span:nth-child(4),
+  .trash-content-area .listing-items.compact .trash-list-header span:nth-child(4),
+  .trash-content-area .listing-items.list .trash-expires,
+  .trash-content-area .listing-items.compact .trash-expires {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .trash-content-area .listing-items.list .trash-list-header,
+  .trash-content-area .listing-items.compact .trash-list-header,
+  .trash-content-area .listing-items.list .trash-item-row,
+  .trash-content-area .listing-items.compact .trash-item-row {
+    grid-template-columns: minmax(12em, 1fr) minmax(8em, 0.6fr) minmax(11em, 0.8fr);
+  }
+
+  .trash-content-area .listing-items.list .trash-list-header span:nth-child(2),
+  .trash-content-area .listing-items.compact .trash-list-header span:nth-child(2),
+  .trash-content-area .listing-items.list .trash-path,
+  .trash-content-area .listing-items.compact .trash-path {
+    display: none;
+  }
+}
+
+
 
 /* ── Context menu: trash-specific danger action ── */
 .trash-ctx-danger {

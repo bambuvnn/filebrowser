@@ -48,16 +48,18 @@
 
     <div class="text">
       <p class="name">{{ displayName }}</p>
-      <p
-        class="size"
-        :data-order="humanSize"
-      >
-        {{ humanSize }}
-      </p>
-      <p class="modified">
-        <time :datetime="modified">{{ formattedTime }}</time>
-      </p>
-      <p v-if="hasDuration" class="duration">{{ formattedDuration }}</p>
+      <slot name="metadata">
+        <p
+          class="size"
+          :data-order="humanSize"
+        >
+          {{ humanSize }}
+        </p>
+        <p class="modified">
+          <time :datetime="modified">{{ formattedTime }}</time>
+        </p>
+        <p v-if="hasDuration" class="duration">{{ formattedDuration }}</p>
+      </slot>
     </div>
       <Icon
         @click.stop="downloadFile"
@@ -119,16 +121,18 @@
 
     <div class="text">
       <p class="name">{{ displayName }}</p>
-      <p
-        class="size"
-        :data-order="humanSize"
-      >
-        {{ humanSize }}
-      </p>
-      <p class="modified">
-        <time :datetime="modified">{{ formattedTime }}</time>
-      </p>
-      <p v-if="hasDuration" class="duration">{{ formattedDuration }}</p>
+      <slot name="metadata">
+        <p
+          class="size"
+          :data-order="humanSize"
+        >
+          {{ humanSize }}
+        </p>
+        <p class="modified">
+          <time :datetime="modified">{{ formattedTime }}</time>
+        </p>
+        <p v-if="hasDuration" class="duration">{{ formattedDuration }}</p>
+      </slot>
     </div>
   </div>
 </template>
