@@ -1,9 +1,6 @@
 package icons
 
 import (
-	"path/filepath"
-	"strings"
-
 	"github.com/bambuvnn/filebrowser/backend/common/settings"
 )
 

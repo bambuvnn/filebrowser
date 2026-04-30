@@ -4736,6 +4736,9 @@ const docTemplate = `{
                 "originalPath": {
                     "type": "string"
                 },
+                "size": {
+                    "type": "integer"
+                },
                 "sourceName": {
                     "type": "string"
                 },

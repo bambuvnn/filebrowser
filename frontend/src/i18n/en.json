@@ -452,7 +452,8 @@
     "moveFailed": "Move failed",
     "operationFailed": "Operation failed",
     "partialSuccess": "Some operations failed: {succeeded} succeeded, {failed} failed",
-    "confirmPasswordToSaveUser": "Enter your current password to save these user changes."
+    "confirmPasswordToSaveUser": "Enter your current password to save these user changes.",
+    "copyToClipboardFailed": "Failed to copy to clipboard"
   },
   "search": {
     "searchContext": "Search Context: {context}",
@@ -968,6 +969,7 @@
     "selectAll": "Select all",
     "unselectAll": "Unselect all",
     "itemsSelected": "{count} item(s) selected",
-    "movedToTrash": "Moved to trash"
+    "movedToTrash": "Moved to trash",
+    "emptyDescription": "Items you delete will appear here"
   }
 }

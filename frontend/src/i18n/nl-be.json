@@ -241,7 +241,8 @@
     "unarchiveDestination": "Uittreksel naar:",
     "unarchiveSuccess": "Archief met succes uitgepakt!",
     "downloadFailed": "Chunkedownload mislukt - als dit zich herhaalt, probeer dan de grootte van de chunk te verkleinen: {message}",
-    "confirmPasswordToSaveUser": "Voer uw huidige wachtwoord in om deze gebruikerswijzigingen op te slaan."
+    "confirmPasswordToSaveUser": "Voer uw huidige wachtwoord in om deze gebruikerswijzigingen op te slaan.",
+    "copyToClipboardFailed": "Failed to copy to clipboard"
   },
   "search": {
     "smallerThan": "Kleiner dan:",
@@ -940,5 +941,30 @@
     "documentDownload": "Document downloaden - Compleet",
     "editorSuccess": "Initialisatie Editor - Succes! Alle stappen voltooid.",
     "setupError": "Setup-fout"
+  },
+  "trash": {
+    "title": "Trash",
+    "name": "Name",
+    "originalPath": "Original Path",
+    "deletedAt": "Deleted At",
+    "expiresAt": "Expires At",
+    "owner": "Owner",
+    "restore": "Restore",
+    "deletePermanently": "Delete Permanently",
+    "empty": "Trash is empty",
+    "allUsers": "Show all users' items",
+    "confirmDeleteTitle": "Delete Permanently",
+    "confirmDeleteSingle": "Are you sure you want to permanently delete this item? This cannot be undone.",
+    "confirmDeleteMultiple": "Are you sure you want to permanently delete {count} item(s)? This cannot be undone.",
+    "restoreSuccess": "Item(s) restored successfully!",
+    "deleteSuccess": "Item(s) permanently deleted!",
+    "restoreFailed": "Failed to restore item(s)",
+    "deleteFailed": "Failed to delete item(s)",
+    "select": "Select",
+    "selectAll": "Select all",
+    "unselectAll": "Unselect all",
+    "itemsSelected": "{count} item(s) selected",
+    "movedToTrash": "Moved to trash",
+    "emptyDescription": "Items you delete will appear here"
   }
 }

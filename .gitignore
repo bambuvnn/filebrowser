@@ -68,3 +68,5 @@ backend/preview/thumbnails/
 AGENTS.md
 
 CLAUDE.md
+
+.playwright-mcp/

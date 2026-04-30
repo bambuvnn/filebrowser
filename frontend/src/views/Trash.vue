@@ -814,7 +814,7 @@ export default {
       }
     },
 
-    handleGlobalClick(event) {
+    handleGlobalClick() {
       // Close context menu on outside click
       if (this.showTrashContextMenu) {
         this.closeTrashContextMenu()

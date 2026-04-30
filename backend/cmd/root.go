@@ -58,6 +58,10 @@ func StartFilebrowser() {
 	if !keepGoing {
 		return
 	}
+	database := fmt.Sprintf("Using existing database  : %v", settings.Config.Server.Database)
+	if !dbExists {
+		database = fmt.Sprintf("Creating new database    : %v", settings.Config.Server.Database)
+	}
 	// Create context and channels for graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

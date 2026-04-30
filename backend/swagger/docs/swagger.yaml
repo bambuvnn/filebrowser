@@ -261,6 +261,8 @@ definitions:
         type: string
       originalPath:
         type: string
+      size:
+        type: integer
       sourceName:
         type: string
       username:
