@@ -333,7 +333,6 @@
     "tusUploadsRetryCount": "Aantal pogingen dat moet worden uitgevoerd als het uploaden van een chunk mislukt.",
     "userHomeBasePath": "Basispad voor homedirectory's van gebruikers",
     "userScopeGenerationPlaceholder": "De scope wordt automatisch gegenereerd",
-    "createUserHomeDirectory": "Thuismap gebruiker aanmaken",
     "shareSettings": "Instellingen delen",
     "shareDeleted": "Deel verwijderd!",
     "adminOptions": "Opties voor beheerders",
@@ -868,7 +867,8 @@
     "reassignPath": "Pad opnieuw toewijzen",
     "pathReassigned": "Pad succesvol bijgewerkt!",
     "pathReassignFailed": "Het bijwerken van het pad is mislukt. Probeer het opnieuw.",
-    "incompleteResultsDetails": "Max resultaten ({max}). Probeer uw zoekopdracht te verfijnen voor meer resultaten onder {max}."
+    "incompleteResultsDetails": "Max resultaten ({max}). Probeer uw zoekopdracht te verfijnen voor meer resultaten onder {max}.",
+    "noCreateOptions": "Er zijn geen opties beschikbaar"
   },
   "duplicateFinder": {
     "title": "Duplicaat bestand zoeken",

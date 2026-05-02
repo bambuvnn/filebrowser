@@ -44,7 +44,7 @@ setup-buildx:
 build-docker: setup-buildx
 	@echo "Building multi-platform image and pushing to Docker Hub..."
 	docker buildx build \
-		--platform linux/amd64,linux/arm64 \
+		--platform linux/arm64 \
 		--build-arg="VERSION=testing" \
 		--build-arg="REVISION=n/a" \
 		-t bambuvn/filebrowser:latest \
@@ -69,7 +69,7 @@ build-docker-local:
 build-docker-slim: setup-buildx
 	@echo "Building slim multi-platform image and pushing to Docker Hub..."
 	docker buildx build \
-		--platform linux/amd64,linux/arm64 \
+		--platform linux/arm64 \
 		--build-arg="VERSION=testing" \
 		--build-arg="REVISION=n/a" \
 		-t bambuvn/filebrowser:latest \

@@ -5,7 +5,8 @@
     "reassignPath": "Riassegna percorso",
     "pathReassigned": "Percorso aggiornato con successo!",
     "pathReassignFailed": "Aggiornamento del percorso fallito. Riprova.",
-    "incompleteResultsDetails": "Visualizzazione dei risultati massimi ({max}). Prova a restringere la ricerca per ottenere più risultati sotto {max}."
+    "incompleteResultsDetails": "Visualizzazione dei risultati massimi ({max}). Prova a restringere la ricerca per ottenere più risultati sotto {max}.",
+    "noCreateOptions": "Non sono disponibili opzioni di creazione"
   },
   "general": {
     "divider": "Divisore{suffix}",
@@ -578,7 +579,6 @@
     "tusUploadsRetryCount": "Numero di tentativi se un pezzo fallisce.",
     "userHomeBasePath": "Percorso base per le home degli utenti",
     "userScopeGenerationPlaceholder": "L'ambito verrà generato automaticamente",
-    "createUserHomeDirectory": "Crea directory home utente",
     "customStylesheet": "Foglio di stile personalizzato (CSS)",
     "defaultUserDescription": "Impostazioni predefinite per i nuovi utenti.",
     "disableExternalLinks": "Disabilita link esterni (eccetto documentazione)",

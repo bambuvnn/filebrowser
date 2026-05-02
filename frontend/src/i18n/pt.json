@@ -333,7 +333,6 @@
     "tusUploadsRetryCount": "Número de tentativas a efetuar se um pedaço não for carregado.",
     "userHomeBasePath": "Caminho de base para as diretorias pessoais dos utilizadores",
     "userScopeGenerationPlaceholder": "O âmbito será gerado automaticamente",
-    "createUserHomeDirectory": "Criar o diretório pessoal do utilizador",
     "shareSettings": "Partilhar definições",
     "shareDeleted": "Partilhar eliminado!",
     "adminOptions": "Opções do utilizador administrador",
@@ -868,7 +867,8 @@
     "reassignPath": "Reatribuir trajetória",
     "pathReassigned": "Caminho atualizado com sucesso!",
     "pathReassignFailed": "Falha ao atualizar o caminho. Por favor, tente novamente.",
-    "incompleteResultsDetails": "Mostrando resultados máximos ({max}). Tente restringir a sua pesquisa para obter mais resultados em {max}."
+    "incompleteResultsDetails": "Mostrando resultados máximos ({max}). Tente restringir a sua pesquisa para obter mais resultados em {max}.",
+    "noCreateOptions": "Não estão disponíveis opções de criação"
   },
   "duplicateFinder": {
     "title": "Localizador de ficheiros duplicados",

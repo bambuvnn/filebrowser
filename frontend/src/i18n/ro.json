@@ -327,7 +327,6 @@
     "tusUploadsRetryCount": "Numărul de încercări care trebuie efectuate dacă o bucată nu reușește să fie încărcată.",
     "userHomeBasePath": "Calea de bază pentru directoarele home ale utilizatorilor",
     "userScopeGenerationPlaceholder": "Domeniul de aplicare va fi generat automat",
-    "createUserHomeDirectory": "Crearea directorului home al utilizatorului",
     "shareDeleted": "Share șters!",
     "loginMethodDescription": "metoda de conectare permisă pentru utilizator.",
     "userNotAdmin": "Utilizatorul nu este administrator",
@@ -868,7 +867,8 @@
     "reassignPath": "Reatribuiți calea",
     "pathReassigned": "Calea a fost actualizată cu succes!",
     "pathReassignFailed": "A eșuat actualizarea căii. Vă rugăm să încercați din nou.",
-    "incompleteResultsDetails": "Afișarea rezultatelor maxime ({max}). Încercați să restrângeți căutarea pentru a obține mai multe rezultate la {max}."
+    "incompleteResultsDetails": "Afișarea rezultatelor maxime ({max}). Încercați să restrângeți căutarea pentru a obține mai multe rezultate la {max}.",
+    "noCreateOptions": "Nu sunt disponibile opțiuni de creare"
   },
   "duplicateFinder": {
     "title": "Duplicate fișier Finder",

@@ -333,7 +333,6 @@
     "tusUploadsRetryCount": "Antal försök som ska göras om en chunk inte kan laddas upp.",
     "userHomeBasePath": "Basväg för användares hemkataloger",
     "userScopeGenerationPlaceholder": "Omfattningen kommer att genereras automatiskt",
-    "createUserHomeDirectory": "Skapa användarens hemkatalog",
     "shareSettings": "Dela inställningar",
     "shareDeleted": "Dela borttaget!",
     "adminOptions": "Alternativ för administratörsanvändare",
@@ -868,7 +867,8 @@
     "reassignPath": "Omfördela sökväg",
     "pathReassigned": "Sökvägen har uppdaterats!",
     "pathReassignFailed": "Misslyckades med att uppdatera sökvägen. Vänligen försök igen.",
-    "incompleteResultsDetails": "Visar max resultat ({max}). Försök att begränsa din sökning för att få fler resultat under {max}."
+    "incompleteResultsDetails": "Visar max resultat ({max}). Försök att begränsa din sökning för att få fler resultat under {max}.",
+    "noCreateOptions": "Inga alternativ för skapande är tillgängliga"
   },
   "duplicateFinder": {
     "title": "Hitta duplicerade filer",

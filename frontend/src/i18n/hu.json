@@ -276,7 +276,6 @@
     "createUserDir": "Felhasználók saját mappáinak automatikus létrehozása új felhasználók hozzáadásakor",
     "userHomeBasePath": "Alap elérési útvonal a felhasználók saját mappáihoz",
     "userScopeGenerationPlaceholder": "A környezet automatikus lesz létrehozva",
-    "createUserHomeDirectory": "Felhasználói saját mappák létrehozása",
     "customStylesheet": "Egyéni stíluslap",
     "defaultUserDescription": "Ezek az alapértelmezett beállítások az új felhasználók számára.",
     "disableExternalLinks": "Külső linkek letiltása (kivéve a dokumentáció)",
@@ -868,7 +867,8 @@
     "reassignPath": "Útvonal újbóli kijelölése",
     "pathReassigned": "Az útvonal sikeresen frissült!",
     "pathReassignFailed": "Nem sikerült frissíteni az elérési utat. Kérjük, próbálja újra.",
-    "incompleteResultsDetails": "Maximális eredmények megjelenítése ({max}). Próbálja szűkíteni a keresést, hogy több eredményt kapjon a {max} alatt ."
+    "incompleteResultsDetails": "Maximális eredmények megjelenítése ({max}). Próbálja szűkíteni a keresést, hogy több eredményt kapjon a {max} alatt .",
+    "noCreateOptions": "Nincs lehetőség létrehozására"
   },
   "duplicateFinder": {
     "title": "Duplikátum fájl kereső",

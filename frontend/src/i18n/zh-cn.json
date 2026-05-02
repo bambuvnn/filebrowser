@@ -334,7 +334,6 @@
     "tusUploadsRetryCount": "块上传失败时的重试次数。",
     "userHomeBasePath": "用户主目录的基本路径",
     "userScopeGenerationPlaceholder": "范围将自动生成",
-    "createUserHomeDirectory": "创建用户主目录",
     "shareSettings": "共享设置",
     "adminOptions": "管理员用户选项",
     "searchOptions": "搜索选项",
@@ -868,7 +867,8 @@
     "reassignPath": "重新分配路径",
     "pathReassigned": "路径更新成功！",
     "pathReassignFailed": "更新路径失败。请重试。",
-    "incompleteResultsDetails": "显示最大结果 ({max})。请尝试缩小搜索范围，以获得{max} 下的更多结果。"
+    "incompleteResultsDetails": "显示最大结果 ({max})。请尝试缩小搜索范围，以获得{max} 下的更多结果。",
+    "noCreateOptions": "没有创建选项"
   },
   "duplicateFinder": {
     "title": "重复文件查找器",

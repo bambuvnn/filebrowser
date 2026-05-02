@@ -277,7 +277,6 @@
     "createUserDir": "Crea automaticamente una carpeta cuando se agrega un nuevo usuario",
     "userHomeBasePath": "Ruta base para la carpeta personal del usuario",
     "userScopeGenerationPlaceholder": "La carpeta se generará automáticamente",
-    "createUserHomeDirectory": "Crea una carpeta personal para cada usuario",
     "customStylesheet": "Hoja de estilos personalizada",
     "defaultUserDescription": "Configuración por defecto nuevos usuarios",
     "disableExternalLinks": "Desactivar enlaces externos",
@@ -868,7 +867,8 @@
     "reassignPath": "Reasignar ruta",
     "pathReassigned": "¡La ruta se actualizó correctamente!",
     "pathReassignFailed": "No se pudo actualizar la ruta. Inténtalo de nuevo",
-    "incompleteResultsDetails": "Mostrando resultados máximos ({max}). Intenta restringir la búsqueda para obtener más resultados en {max}."
+    "incompleteResultsDetails": "Mostrando resultados máximos ({max}). Intenta restringir la búsqueda para obtener más resultados en {max}.",
+    "noCreateOptions": "No hay opciones de creación disponibles"
   },
   "duplicateFinder": {
     "title": "Buscador de archivos duplicados",

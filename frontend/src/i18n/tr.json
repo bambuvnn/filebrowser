@@ -328,7 +328,6 @@
     "tusUploadsRetryCount": "Bir yığının yüklenememesi durumunda gerçekleştirilecek yeniden deneme sayısı.",
     "userHomeBasePath": "Kullanıcı ev dizinleri için temel yol",
     "userScopeGenerationPlaceholder": "Kapsam otomatik olarak oluşturulacaktır",
-    "createUserHomeDirectory": "Kullanıcı ev dizini oluşturma",
     "loginMethodDescription": "kullanıcı için izin verilen oturum açma yöntemi.",
     "userNotAdmin": "Kullanıcı yönetici değil",
     "enterPassword": "Şifre girin",
@@ -868,7 +867,8 @@
     "reassignPath": "Yolu Yeniden Atayın",
     "pathReassigned": "Yol başarıyla güncellendi!",
     "pathReassignFailed": "Yol güncellenemedi. Lütfen tekrar deneyin.",
-    "incompleteResultsDetails": "Maksimum sonuç gösteriliyor ({max}). {max} altında daha fazla sonuç almak için aramanızı daraltmayı deneyin."
+    "incompleteResultsDetails": "Maksimum sonuç gösteriliyor ({max}). {max} altında daha fazla sonuç almak için aramanızı daraltmayı deneyin.",
+    "noCreateOptions": "Oluşturma seçeneği mevcut değil"
   },
   "duplicateFinder": {
     "title": "Yinelenen Dosya Bulucu",

@@ -276,7 +276,6 @@
     "createUserDir": "צור תקיית בית במהלך הוספת משתמש חדש",
     "userHomeBasePath": "נתיב ראשי לתקיות הבית של משתמשים",
     "userScopeGenerationPlaceholder": "התחום יווצר אוטומטית",
-    "createUserHomeDirectory": "צור תקיית בית למשתמש",
     "customStylesheet": "עיצוב מותאם אישית (Stylesheet)",
     "defaultUserDescription": "אלה הגדרות ברירת המחדל למשתמשים חדשים",
     "disableExternalLinks": "השבת קישורים חיצוניים (למעט תיעוד)",
@@ -868,7 +867,8 @@
     "reassignPath": "הקצאת נתיב מחדש",
     "pathReassigned": "הנתיב עודכן בהצלחה!",
     "pathReassignFailed": "לא ניתן לעדכן את הנתיב. אנא נסה שוב.",
-    "incompleteResultsDetails": "הצגת תוצאות מקסימליות ({max}). נסה לצמצם את החיפוש כדי לקבל תוצאות נוספות תחת {max}."
+    "incompleteResultsDetails": "הצגת תוצאות מקסימליות ({max}). נסה לצמצם את החיפוש כדי לקבל תוצאות נוספות תחת {max}.",
+    "noCreateOptions": "אין אפשרויות יצירה זמינות"
   },
   "duplicateFinder": {
     "title": "מאתר קבצים כפולים",

@@ -328,7 +328,6 @@
     "tusUploadsRetryCount": "Nombre de tentatives à effectuer si un bloc ne parvient pas à être importé.",
     "userHomeBasePath": "Chemin de base pour les répertoires personnels des utilisateurs",
     "userScopeGenerationPlaceholder": "Le champ d'application sera généré automatiquement",
-    "createUserHomeDirectory": "Créer le répertoire personnel de l'utilisateur",
     "api": "API",
     "loginMethodDescription": "méthode de connexion autorisée pour l'utilisateur.",
     "userNotAdmin": "L'utilisateur n'est pas un administrateur",
@@ -868,7 +867,8 @@
     "reassignPath": "Réaffecter le chemin",
     "pathReassigned": "Mise à jour du chemin d'accès réussie !",
     "pathReassignFailed": "Échec de la mise à jour du chemin d'accès. Veuillez réessayer.",
-    "incompleteResultsDetails": "Résultats maximums ({max}). Essayez d'affiner votre recherche pour obtenir plus de résultats sous {max}."
+    "incompleteResultsDetails": "Résultats maximums ({max}). Essayez d'affiner votre recherche pour obtenir plus de résultats sous {max}.",
+    "noCreateOptions": "Aucune option de création n'est disponible"
   },
   "duplicateFinder": {
     "title": "Recherche de fichiers en double",

@@ -328,7 +328,6 @@
     "UserManagement": "Benutzerverwaltung",
     "userHomeBasePath": "Basispfad für Benutzer-Home-Verzeichnisse",
     "userScopeGenerationPlaceholder": "Der Bereich wird automatisch generiert",
-    "createUserHomeDirectory": "Benutzer-Home-Verzeichnis erstellen",
     "loginMethodDescription": "erlaubte Anmeldemethode für den Benutzer.",
     "userNotAdmin": "Benutzer ist kein Administrator",
     "enterPassword": "Passwort eingeben",
@@ -868,7 +867,8 @@
     "reassignPath": "Pfad neu zuweisen",
     "pathReassigned": "Pfad erfolgreich aktualisiert!",
     "pathReassignFailed": "Der Pfad konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
-    "incompleteResultsDetails": "Zeigt max Ergebnisse ({max}). Versuchen Sie, Ihre Suche einzugrenzen, um mehr Ergebnisse unter {max} zu erhalten."
+    "incompleteResultsDetails": "Zeigt max Ergebnisse ({max}). Versuchen Sie, Ihre Suche einzugrenzen, um mehr Ergebnisse unter {max} zu erhalten.",
+    "noCreateOptions": "Es sind keine Erstellungsoptionen verfügbar"
   },
   "duplicateFinder": {
     "title": "Duplicate File Finder",

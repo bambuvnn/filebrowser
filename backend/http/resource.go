@@ -272,22 +272,32 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 
 	// Process each item one at a time
 	for _, item := range items {
+		rawPath := item.Path
 		// Validate item
-		if item.Path == "" {
+		if rawPath == "" {
 			response.Failed = append(response.Failed, BulkDeleteItem{
 				Source:  item.Source,
-				Path:    item.Path,
+				Path:    rawPath,
 				Message: "path was empty",
 			})
 			continue
 		}
 
 		// Prevent deletion of root
-		if item.Path == "/" {
+		if rawPath == "/" {
 			response.Failed = append(response.Failed, BulkDeleteItem{
 				Source:  item.Source,
-				Path:    item.Path,
+				Path:    rawPath,
 				Message: "cannot delete root directory",
+			})
+			continue
+		}
+		sanitizedPath, err := utils.SanitizeUserPath(rawPath)
+		if err != nil {
+			response.Failed = append(response.Failed, BulkDeleteItem{
+				Source:  item.Source,
+				Path:    sanitizedPath,
+				Message: err.Error(),
 			})
 			continue
 		}
@@ -303,13 +313,13 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 			if err != nil {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,
-					Path:    item.Path,
+					Path:    sanitizedPath,
 					Message: "user does not have access",
 				})
 				continue
 			}
 			withoutUserScope := strings.TrimPrefix(d.share.Path, userScope)
-			indexPath := utils.JoinPathAsUnix(withoutUserScope, item.Path)
+			indexPath := utils.JoinPathAsUnix(withoutUserScope, sanitizedPath)
 
 			fileInfo, err := files.FileInfoFaster(utils.FileOptions{
 				FollowSymlinks: true,
@@ -327,7 +337,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 				logger.Errorf("resource bulk delete handler: error deleting file/directory: %v", err)
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,
-					Path:    item.Path,
+					Path:    sanitizedPath,
 					Message: "error deleting file/directory, admin must check the logs",
 				})
 				continue
@@ -339,7 +349,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 			if item.Source == "" {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,
-					Path:    item.Path,
+					Path:    sanitizedPath,
 					Message: "source was empty, source is required",
 				})
 				continue
@@ -350,7 +360,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 			if err != nil {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,
-					Path:    item.Path,
+					Path:    sanitizedPath,
 					Message: fmt.Sprintf("user does not have access: %v", err),
 				})
 				continue
@@ -360,7 +370,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 			if idx == nil {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,
-					Path:    item.Path,
+					Path:    sanitizedPath,
 					Message: "source not found",
 				})
 				continue
@@ -368,27 +378,28 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 
 			if !permanent {
 				// Soft delete: move to trash
-				fullIndexPath := utils.JoinPathAsUnix(userScope, item.Path)
+				fullIndexPath := utils.JoinPathAsUnix(userScope, sanitizedPath)
 				if err := moveItemsToTrash([]TrashMoveItem{{Source: item.Source, Path: fullIndexPath}}, d.user.Username); err != nil {
 					response.Failed = append(response.Failed, BulkDeleteItem{
 						Source:  item.Source,
-						Path:    item.Path,
+						Path:    sanitizedPath,
 						Message: err.Error(),
 					})
 					continue
 				}
 			} else {
 				// Permanent delete
+				// Get file info
 				fileInfo, err := files.FileInfoFaster(utils.FileOptions{
 					FollowSymlinks: true,
-					Path:           idx.MakeIndexPath(item.Path, false),
+					Path:           sanitizedPath,
 					Source:         item.Source,
 					ShowHidden:     true,
 				}, store.Access, filePermUser, store.Share)
 				if err != nil {
 					response.Failed = append(response.Failed, BulkDeleteItem{
 						Source:  item.Source,
-						Path:    item.Path,
+						Path:    sanitizedPath,
 						Message: err.Error(),
 					})
 					continue
@@ -397,7 +408,7 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 				if err != nil {
 					response.Failed = append(response.Failed, BulkDeleteItem{
 						Source:  item.Source,
-						Path:    item.Path,
+						Path:    sanitizedPath,
 						Message: err.Error(),
 					})
 					continue

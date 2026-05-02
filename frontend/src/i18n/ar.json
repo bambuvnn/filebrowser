@@ -327,7 +327,6 @@
     "tusUploadsRetryCount": "عدد مرات إعادة المحاولة التي يجب إجراؤها في حالة فشل تحميل قطعة ما.",
     "userHomeBasePath": "المسار الأساسي للدلائل الرئيسية للمستخدم",
     "userScopeGenerationPlaceholder": "سيتم إنشاء النطاق تلقائيًا",
-    "createUserHomeDirectory": "إنشاء الدليل الرئيسي للمستخدم",
     "shareDeleted": "تم حذف المشاركة",
     "loginMethodDescription": "طريقة تسجيل الدخول المسموح بها للمستخدم.",
     "userNotAdmin": "المستخدم ليس مسؤولاً",
@@ -868,7 +867,8 @@
     "reassignPath": "إعادة تعيين المسار",
     "pathReassigned": "تم تحديث المسار بنجاح!",
     "pathReassignFailed": "فشل تحديث المسار. يرجى المحاولة مرة أخرى.",
-    "incompleteResultsDetails": "عرض أقصى النتائج ({max}). حاول تضييق نطاق البحث للحصول على المزيد من النتائج تحت {max}."
+    "incompleteResultsDetails": "عرض أقصى النتائج ({max}). حاول تضييق نطاق البحث للحصول على المزيد من النتائج تحت {max}.",
+    "noCreateOptions": "لا توجد خيارات إنشاء متاحة"
   },
   "duplicateFinder": {
     "title": "أداة البحث عن الملفات المكررة",
