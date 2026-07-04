@@ -1026,12 +1026,13 @@ export default {
   flex-direction: column;
   height: 100%;
   width: 100%;
+  position: relative;
+  overflow: hidden; /* prevent double scrollbar */
 }
 
 /* ── Toolbar ──────────────────────────────────── */
 .trash-toolbar-wrapper {
-  position: sticky;
-  top: 0;
+  flex: 0 0 auto;
   z-index: 100;
   background: var(--surfacePrimary);
   border-bottom: 1px solid var(--divider);
@@ -1184,9 +1185,11 @@ export default {
 
 /* ── Content Area ────────────────────────────── */
 .trash-content-area {
-  flex: 1;
+  flex: 1 1 auto;
   padding: 1em;
+  padding-bottom: 3.5em; /* space for trash status bar */
   overflow-y: auto;
+  min-height: 0; /* allow flex child to shrink below content size */
 }
 
 /* ── Empty state ─────────────────────────────── */
