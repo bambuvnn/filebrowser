@@ -742,7 +742,7 @@ export default {
         const relativePath = buildItemUrl(source, absolutePath, true);
         return `${window.location.origin}${relativePath}`;
       });
-      const text = urls.join(\n);
+      const text = urls.join('\n');
       try {
         await navigator.clipboard.writeText(text);
         notify.showSuccessToast(this.$t('buttons.copySuccess'));
