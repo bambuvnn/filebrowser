@@ -8,6 +8,7 @@ import (
 	"github.com/gtsteffaniak/filebrowser/backend/database/access"
 	"github.com/gtsteffaniak/filebrowser/backend/database/dbindex"
 	"github.com/gtsteffaniak/filebrowser/backend/database/share"
+	"github.com/gtsteffaniak/filebrowser/backend/database/trash"
 	"github.com/gtsteffaniak/filebrowser/backend/database/users"
 )
 
@@ -19,6 +20,7 @@ type BoltStore struct {
 	Auth     *auth.Storage
 	Settings *settings.Storage
 	Access   *access.Storage
+	Trash    *trash.Storage
 	Indexing *dbindex.Storage
 }
 
@@ -34,6 +36,7 @@ func NewStorage(db *storm.DB) (*BoltStore, error) {
 		Share:    share.NewStorage(shareBackend{db: db}, userStore),
 		Auth:     authStore,
 		Settings: settings.NewStorage(settingsBackend{db: db}),
+		Trash:    trash.NewStorage(&trashBackend{db: db}),
 		Access:   access.NewStorage(db, userStore),
 		Indexing: dbindex.NewStorage(indexingBackend{db: db}),
 	}, nil
