@@ -728,7 +728,7 @@ export default {
       downloadFiles(items);
     },
     async copyItemUrl() {
-      mutations.closeContextMenus();
+      mutations.closeHovers();
       const items = this.providedItems;
       const urls = items.map(item => {
         const source = item.source || state.req.source;
