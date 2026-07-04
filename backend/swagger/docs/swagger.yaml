@@ -2930,6 +2930,32 @@ paths:
       summary: Verify OTP
       tags:
       - Auth
+  /api/auth/refresh:
+    post:
+      description: Uses the refresh token cookie to generate a new session token without
+        re-authentication.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: New JWT token for authentication
+          schema:
+            type: string
+        "401":
+          description: Unauthorized - invalid or expired refresh token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Refresh session using refresh token
+      tags:
+      - Auth
   /api/auth/renew:
     post:
       consumes:

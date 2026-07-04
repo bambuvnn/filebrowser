@@ -20,6 +20,7 @@ func CheckErr(source string, err error) {
 	}
 }
 
+
 // CapitalizeFirst returns the input string with the first letter capitalized.
 func CapitalizeFirst(s string) string {
 	if len(s) == 0 {

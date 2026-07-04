@@ -169,6 +169,7 @@ export default {
       mutations.showPrompt({ name: "ActionApi", props: { name: name, info: info } });
     },
     formatTime(time) {
+      if (!time || time === 0) return this.$t("api.never");
       return new Date(time * 1000).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",

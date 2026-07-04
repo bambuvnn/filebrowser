@@ -40,15 +40,17 @@ func MakeSignedTokenAPI(user *users.User, name string, duration time.Duration, p
 		return "", users.AuthToken{}, fmt.Errorf("key already exists with same name %v ", name)
 	}
 	now := time.Now()
-	expires := now.Add(duration)
-	// Create minimal token with only JWT standard claims
+	registeredClaims := jwt.RegisteredClaims{
+		IssuedAt: jwt.NewNumericDate(now),
+		Issuer:   FB_ISSUER,
+	}
+	// Only set ExpiresAt if duration > 0; duration == 0 means never expire
+	if duration > 0 {
+		registeredClaims.ExpiresAt = jwt.NewNumericDate(now.Add(duration))
+	}
 	claim := users.AuthToken{
 		MinimalAuthToken: users.MinimalAuthToken{
-			RegisteredClaims: jwt.RegisteredClaims{
-				IssuedAt:  jwt.NewNumericDate(now),
-				ExpiresAt: jwt.NewNumericDate(expires),
-				Issuer:    FB_ISSUER,
-			},
+			RegisteredClaims: registeredClaims,
 		},
 	}
 	if !minimal {
@@ -61,5 +63,4 @@ func MakeSignedTokenAPI(user *users.User, name string, duration time.Duration, p
 		return "", users.AuthToken{}, err
 	}
 	return tokenString, claim, nil
-
 }

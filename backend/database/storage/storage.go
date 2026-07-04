@@ -51,6 +51,24 @@ func InitializeDb(path string) (*bolt.BoltStore, bool, error) {
 			settings.Env.IsFirstLoad = true
 		}
 		quickSetup(store)
+	} else {
+		// Load Auth.Key from database when DB already exists and no env var override is set.
+		// This ensures JWT tokens signed before a restart can still be verified.
+		if len(settings.Config.Auth.Key) == 0 {
+			savedSettings, err := store.Settings.Get()
+			if err == nil && savedSettings != nil && len(savedSettings.Auth.Key) > 0 {
+				settings.Config.Auth.Key = savedSettings.Auth.Key
+				logger.Debug("Loaded JWT signing key from database")
+			} else {
+				// No key in DB either — generate and persist one so future restarts are consistent
+				settings.Config.Auth.Key = utils.GenerateKey()
+				if saveErr := store.Settings.Save(&settings.Config); saveErr != nil {
+					logger.Errorf("Failed to save generated JWT signing key to database: %v", saveErr)
+				} else {
+					logger.Info("Generated and saved new JWT signing key to database")
+				}
+			}
+		}
 	}
 
 	return store, exists, err

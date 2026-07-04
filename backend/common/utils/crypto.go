@@ -72,3 +72,13 @@ func CSPNonce() (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(b), nil
 }
+
+// SecureRandomToken generates a cryptographically secure random token string (hex encoded).
+func SecureRandomToken(byteLength int) (string, error) {
+	b := make([]byte, byteLength)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil (Fix issue cannot keep api token alive)
+}

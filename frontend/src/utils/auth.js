@@ -13,6 +13,27 @@ export async function validateLogin(isPublicRoute = false) {
     }
   });
 
+  if (res.status === 401) {
+    // Session expired — try to refresh using remember-me token
+    const refreshed = await refresh();
+    if (refreshed) {
+      // Retry the original request with the new session
+      const retryRes = await fetch(apiPath, {
+        credentials: 'same-origin',
+        headers: {
+          "sessionId": state.sessionId,
+        }
+      });
+      if (retryRes.status === 200) {
+        const userInfo = await retryRes.json();
+        mutations.setCurrentUser(userInfo);
+        getters.isLoggedIn();
+        return;
+      }
+    }
+    throw new Error(`{"status":401,"message":"session expired"}`);
+  }
+
   if (res.status !== 200) {
     throw new Error(`{"status":${res.status},"message":"${await res.text()}"}`);
   }
@@ -47,6 +68,25 @@ export async function renew() {
     // Backend sets the new cookie, no state management needed
   } else {
     throw new Error(body);
+  }
+}
+
+// refresh uses the long-lived refresh token cookie to get a new session.
+// Returns true if refresh was successful, false otherwise.
+export async function refresh() {
+  try {
+    const apiPath = getApiPath("auth/refresh");
+    const res = await fetch(apiPath, {
+      method: "POST",
+      credentials: 'same-origin', // Refresh cookie is sent automatically (HTTP-only)
+    });
+    if (res.status === 200) {
+      mutations.setSession(generateRandomCode(8));
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
   }
 }
 

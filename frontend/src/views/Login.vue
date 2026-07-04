@@ -46,6 +46,11 @@
             <input class="input" v-if="createMode" type="password" v-model="passwordConfirm"
               :placeholder="$t('login.passwordConfirm')" />
 
+            <label v-if="!createMode" class="remember-me">
+              <input type="checkbox" v-model="rememberMe" />
+              <span>{{ $t('login.rememberMe') }}</span>
+            </label>
+
             <div v-if="globalVars.recaptcha" id="globalVars.recaptcha"></div>
             <input class="button button--block" type="submit"
               :value="createMode ? $t('general.signup') : getLoginButtonValue()" />
@@ -233,6 +238,7 @@ export default {
     password: "",
     recaptcha: globalVars.recaptcha,
     passwordConfirm: "",
+    rememberMe: false,
     loginURL: `${globalVars.baseURL}api/auth/oidc/login`,
     inProgress: false,
   }),
@@ -340,7 +346,7 @@ export default {
         if (this.createMode) {
           await authApi.signup(this.username, this.password);
         }
-        await authApi.login(this.username, this.password, captcha);
+        await authApi.login(this.username, this.password, captcha, undefined, this.rememberMe);
         await initAuth();
         void router.push({ path: redirect });
       } catch (e) {
@@ -355,6 +361,7 @@ export default {
               password: this.password,
               recaptcha: captcha,
               redirect: redirect,
+              rememberMe: this.rememberMe,
             },
           });
         }
@@ -367,6 +374,7 @@ export default {
               password: this.password,
               recaptcha: captcha,
               redirect: redirect,
+              rememberMe: this.rememberMe,
               generate: true,
             },
           });
@@ -379,6 +387,7 @@ export default {
               password: this.password,
               recaptcha: captcha,
               redirect: redirect,
+              rememberMe: this.rememberMe,
               generate: false,
             },
           });
@@ -572,6 +581,29 @@ export default {
   font-weight: 500;
   font-size: 0.9rem;
   margin: .5rem 0;
+}
+
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.5em 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--textColor);
+  user-select: none;
+}
+
+.remember-me input[type="checkbox"] {
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  accent-color: var(--primaryColor);
+}
+
+.remember-me span {
+  opacity: 0.85;
 }
 
 </style>

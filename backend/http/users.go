@@ -261,6 +261,11 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request, d *requestContext
 		return status, err
 	}
 
+	// Revoke all refresh tokens for this user before deletion
+	if err := store.Access.RevokeAllRefreshTokensForUser(givenUserId); err != nil {
+		logger.Errorf("Failed to revoke refresh tokens for deleted user: %v", err)
+	}
+
 	// Delete the user
 	err = store.Users.Delete(givenUserId)
 	if err != nil {
@@ -457,6 +462,13 @@ func userPutHandler(w http.ResponseWriter, r *http.Request, d *requestContext) (
 	err = store.Users.Update(&req.User, d.user.Permissions.Admin, req.Which...)
 	if err != nil {
 		return http.StatusBadRequest, err
+	}
+
+	// Revoke all refresh tokens if password was changed (force re-login on all devices)
+	if slices.Contains(req.Which, "Password") && req.User.Password != "" {
+		if err := store.Access.RevokeAllRefreshTokensForUser(req.User.ID); err != nil {
+			logger.Errorf("Failed to revoke refresh tokens on password change: %v", err)
+		}
 	}
 
 	// Revoke all API keys if API permission was removed
