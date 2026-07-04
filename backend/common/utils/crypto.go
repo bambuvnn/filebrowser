@@ -80,5 +80,5 @@ func SecureRandomToken(byteLength int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(b), nil (Fix issue cannot keep api token alive)
+	return hex.EncodeToString(b), nil
 }

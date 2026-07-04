@@ -219,7 +219,7 @@ import { buildItemUrl, getUserScopeForSource } from "@/utils/url.js";
 import { globalVars } from "@/utils/constants.js";
 import downloadFiles from "@/utils/download";
 import { canNativeShare, nativeShareFile } from "@/utils/nativeShare";
-import { isRichTextPreviewMimeType } from "@/utils/mimetype"; (feat: Implement scope-aware path handling for URL generation and interpretation to support multi-user environments.)
+import { isRichTextPreviewMimeType } from "@/utils/mimetype";
 
 function isArchivePath(pathOrName) {
   if (!pathOrName || typeof pathOrName !== "string") return false;

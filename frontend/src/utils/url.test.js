@@ -62,7 +62,7 @@ vi.mock('@/store', () => {
     },
     mutations: {},
   };
-}); (feat: Implement scope-aware path handling for URL generation and interpretation to support multi-user environments.)
+});
 
 describe('testurl', () => {
 
