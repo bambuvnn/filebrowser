@@ -182,10 +182,6 @@ func listApiTokensHandler(w http.ResponseWriter, r *http.Request, d *requestCont
 	}
 	AuthTokensFrontend := make([]AuthTokenFrontend, 0, len(d.user.Tokens))
 	for name, token := range d.user.Tokens {
-		expiresAt := int64(0)
-		if token.RegisteredClaims.ExpiresAt != nil {
-			expiresAt = token.RegisteredClaims.ExpiresAt.Unix()
-		}
 		AuthTokensFrontend = append(AuthTokensFrontend, AuthTokenFrontend{
 			Token:       token.Token,
 			Name:        name,
