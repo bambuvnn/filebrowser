@@ -29,9 +29,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bambuvnn/filebrowser/backend/auth"
-	"github.com/bambuvnn/filebrowser/backend/common/utils"
-	"github.com/bambuvnn/filebrowser/backend/database/users"
+	"github.com/gtsteffaniak/filebrowser/backend/auth"
+	"github.com/gtsteffaniak/filebrowser/backend/common/utils"
+	"github.com/gtsteffaniak/filebrowser/backend/database/users"
 )
 
 // mockUserBackend is a simple in-memory user storage for testing.
