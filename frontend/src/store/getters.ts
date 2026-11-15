@@ -692,6 +692,8 @@ export const getters = {
     if (getters.isShare() && state.shareInfo.shareType === "upload") {
       return false;
     }
+    // Fork: the Trash page renders its own status bar
+    if ((state.route?.path || "").startsWith("/trash")) return false;
     return (
       getters.currentView() === "listingView" ||
       getters.isEditorOrMarkdownView() ||

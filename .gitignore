@@ -76,3 +76,12 @@ backend/custom.css
 # Runtime cache directories created by tests/application
 backend/preview/heic/
 backend/preview/thumbnails/
+
+# Local agent / code-intelligence tooling (fork)
+.agent/
+.gitnexus
+.claude
+
+AGENTS.md
+
+CLAUDE.md

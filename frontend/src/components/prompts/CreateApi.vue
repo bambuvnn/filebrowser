@@ -11,7 +11,18 @@
     <input v-focus class="input" type="text" v-model.trim="apiName"
       :placeholder="$t('api.keyNamePlaceholder')" />
 
-    <!-- Duration Input -->
+    <!-- Never Expire Toggle -->
+    <div class="settings-items">
+      <ToggleSwitch
+        v-model="neverExpire"
+        :name="$t('api.neverExpire')"
+        class="item"
+        :description="$t('api.neverExpireInfo')"
+      />
+    </div>
+
+    <!-- Duration Input (hidden when neverExpire is on) -->
+    <template v-if="!neverExpire">
     <p>{{ $t('api.tokenDuration') }}</p>
     <div class="form-flex-group">
       <input
@@ -28,6 +39,7 @@
         :aria-label="$t('api.tokenDuration')"
       />
     </div>
+    </template>
 
     <!-- Customize Token Option -->
     <div class="settings-items">
@@ -77,6 +89,7 @@ export default {
       apiName: "",
       duration: 1,
       unit: "days",
+      neverExpire: false,
       customizeToken: false, // false = minimal token (default), true = customizable/full token
       localPerms: {},
       creating: false,
@@ -118,7 +131,8 @@ export default {
       ];
     },
     durationInDays() {
-      // Calculate duration based on unit
+      // 0 days tells the backend to create a token that never expires
+      if (this.neverExpire) return 0;
       return this.unit === "days" ? this.duration : this.duration * 30; // assuming 30 days per month
     },
   },

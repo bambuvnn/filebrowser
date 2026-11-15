@@ -252,12 +252,18 @@ export default {
       if (getters.isShare() && state.shareInfo?.sidebarLinks?.length > 0) {
         return state.shareInfo.sidebarLinks;
       }
-      // If user has custom links, use those
-      if (this.hasCustomLinks) {
-        return this.user.sidebarLinks;
+      // If user has custom links, use those; otherwise default links (sources)
+      const links = this.hasCustomLinks ? [...this.user.sidebarLinks] : [...this.getDefaultLinks()];
+      // Fork: always offer the Trash page to logged-in users (not in share context)
+      if (!getters.isShare() && this.isLoggedIn && !links.some((l) => l.target === '/trash')) {
+        links.push({
+          name: this.$t('trash.title'),
+          category: 'custom',
+          target: '/trash',
+          icon: 'delete',
+        });
       }
-      // Otherwise, return default links (sources)
-      return this.getDefaultLinks();
+      return links;
     },
     // List all source names for the dropdown menu
     sourceNames() {

@@ -14,6 +14,7 @@ const KEEP_ALIVE_INTERVAL_MS = 60 * 1000;
 
 let keepAliveTimer = null;
 let renewInFlight = null;
+let refreshInFlight = null;
 let sessionExpiresAt = null;
 
 function decodeJwtExp(token) {
@@ -68,12 +69,22 @@ export async function validateLogin(isPublicRoute = false) {
   // Use direct fetch to avoid automatic logout on 401
   // Public routes (e.g. /public/share/...) use the public API base path
   const apiPath = getApiPath('users', { username: 'self' }, false, isPublicRoute);
-  const res = await fetch(apiPath, {
+  let res = await fetch(apiPath, {
     credentials: 'same-origin', // Ensure cookies are sent with the request
     headers: {
       "sessionId": state.sessionId,
     }
   });
+
+  if (res.status === 401 && !isPublicRoute && (await refresh())) {
+    // Session expired but a Remember Me refresh token issued a new one: retry.
+    res = await fetch(apiPath, {
+      credentials: 'same-origin',
+      headers: {
+        "sessionId": state.sessionId,
+      }
+    });
+  }
 
   if (res.status !== 200) {
     // A 401 from the non-public self check means our session is no longer valid —
@@ -139,6 +150,38 @@ export async function renew() {
 }
 
 /**
+ * Remember Me: exchange the HttpOnly refresh-token cookie for a new session.
+ * Concurrent callers share one in-flight request. Resolves true on success.
+ */
+export async function refresh() {
+  if (globalVars.noAuth) {
+    return false;
+  }
+  if (refreshInFlight !== null) {
+    return refreshInFlight;
+  }
+  refreshInFlight = (async () => {
+    try {
+      const res = await fetch(getApiPath("auth/refresh"), {
+        method: "POST",
+        credentials: "same-origin",
+      });
+      if (res.status !== 200) {
+        return false;
+      }
+      setSessionExpiresAtFromToken(await res.text());
+      mutations.setSession(generateRandomCode(8));
+      return true;
+    } catch {
+      return false;
+    }
+  })().finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
+}
+
+/**
  * Renew the session JWT when it is missing or within the refresh window.
  * Concurrent callers share one in-flight renew; failures return false.
  */
@@ -155,7 +198,8 @@ export async function ensureSessionFresh(withinMs = SESSION_REFRESH_BEFORE_MS) {
     return true;
   } catch (err) {
     console.warn("session keep-alive renew failed:", err);
-    return false;
+    // The session may already be gone; Remember Me can still recover it.
+    return refresh();
   }
 }
 

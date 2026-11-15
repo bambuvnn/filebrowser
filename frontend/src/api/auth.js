@@ -40,7 +40,7 @@ export async function changeRequiredPassword(username, currentPassword, newPassw
 }
 
 // POST /api/auth/login
-export async function login(username, password, recaptcha, otp) {
+export async function login(username, password, recaptcha, otp, rememberMe = false) {
   if (!otp) {
     otp = ''
   }
@@ -53,6 +53,9 @@ export async function login(username, password, recaptcha, otp) {
 
   try {
     const params = { username, recaptcha };
+    if (rememberMe) {
+      params.rememberMe = 'true';
+    }
     const apiPath = getApiPath('auth/login', params);
     const res = await fetch(apiPath, {
       method: 'POST',

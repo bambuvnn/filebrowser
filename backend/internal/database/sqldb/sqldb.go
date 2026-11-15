@@ -68,6 +68,10 @@ func NewSQLStoreWithOptions(dbPath string, opts NewSQLStoreOpts) (*SQLStore, boo
 		db.Close()
 		return nil, existingDb, err
 	}
+	if err = createForkSchema(db); err != nil {
+		db.Close()
+		return nil, existingDb, err
+	}
 
 	// Initialize or check schema version
 	err = initializeSchemaVersion(db)

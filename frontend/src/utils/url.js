@@ -21,6 +21,8 @@ export default {
   trimSlashes,
   getPublicApiPath,
   resolveRelativePath,
+  getUserScopeForSource,
+  stripScopeFromPath,
 };
 
 export function removeLastDir(url) {
@@ -236,6 +238,29 @@ export function extractSourceFromPath(url, knownSources = []) {
   const source = parts.at(i) || "";
   const rest = parts.slice(i + 1).join("/");
   return { source, path: rest ? `/${rest}` : "/" };
+}
+
+// Get the current user's scope for a given source identifier
+// Returns "/" if scope not found (e.g., admin or single source)
+export function getUserScopeForSource(sourceIdentifier) {
+  const scopes = state.user?.scopes || [];
+  const found = scopes.find((s) => s.name === sourceIdentifier);
+  return found?.scope || "/";
+}
+
+// Strip the user's scope prefix from a path if present.
+// Used when navigating to absolute URLs created by "Copy url" from a user with a
+// different scope, so the backend does not apply the scope twice.
+export function stripScopeFromPath(path, sourceIdentifier) {
+  const userScope = getUserScopeForSource(sourceIdentifier);
+  if (userScope && userScope !== "/" && path.startsWith(userScope)) {
+    const stripped = path.slice(userScope.length);
+    // Only strip on a path-segment boundary ("/Duc" must not match "/Ducks")
+    if (stripped === "" || stripped.startsWith("/")) {
+      return stripped || "/";
+    }
+  }
+  return path;
 }
 
 export function buildItemUrl(source, path, includeBaseURL = false) {

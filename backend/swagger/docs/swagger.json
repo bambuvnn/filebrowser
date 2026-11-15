@@ -636,6 +636,12 @@
                         "description": "TOTP code (if 2FA is enabled)",
                         "name": "X-Secret",
                         "in": "header"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "When true, also set a long-lived refresh token cookie (Remember Me)",
+                        "name": "rememberMe",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -984,6 +990,44 @@
                 }
             }
         },
+        "/api/auth/refresh": {
+            "post": {
+                "description": "Uses the HttpOnly \"Remember Me\" refresh token cookie to issue a new session token without re-authentication. The refresh token is rotated on every use.",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh session using refresh token",
+                "responses": {
+                    "200": {
+                        "description": "New JWT token for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - missing, invalid or expired refresh token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - password change required",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/renew": {
             "post": {
                 "description": "Refresh the authentication token for a logged-in user.",
@@ -1164,10 +1208,9 @@
                     },
                     {
                         "type": "string",
-                        "description": "Duration of the API token in days",
+                        "description": "Duration of the API token in days; 0 or omitted = never expires",
                         "name": "days",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
@@ -3756,6 +3799,112 @@
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/trash": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "List trash items",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Admin only: list all users' trash items",
+                        "name": "all",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/web.TrashItemResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "Permanently delete trash items",
+                "parameters": [
+                    {
+                        "description": "IDs of trash items to permanently delete",
+                        "name": "ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.TrashIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.TrashBulkResponse"
+                        }
+                    },
+                    "207": {
+                        "description": "Partial success",
+                        "schema": {
+                            "$ref": "#/definitions/web.TrashBulkResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/trash/restore": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trash"
+                ],
+                "summary": "Restore trash items",
+                "parameters": [
+                    {
+                        "description": "IDs of trash items to restore",
+                        "name": "ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.TrashIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.TrashBulkResponse"
+                        }
+                    },
+                    "207": {
+                        "description": "Partial success",
+                        "schema": {
+                            "$ref": "#/definitions/web.TrashBulkResponse"
                         }
                     }
                 }
@@ -8721,6 +8870,81 @@
                     "items": {
                         "$ref": "#/definitions/web.MoveCopyItem"
                     }
+                }
+            }
+        },
+        "web.TrashBulkResponse": {
+            "type": "object",
+            "properties": {
+                "failed": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.TrashResultItem"
+                    }
+                },
+                "succeeded": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.TrashResultItem"
+                    }
+                }
+            }
+        },
+        "web.TrashIDsRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "web.TrashItemResponse": {
+            "type": "object",
+            "properties": {
+                "deletedAt": {
+                    "description": "RFC3339",
+                    "type": "string"
+                },
+                "expiresAt": {
+                    "description": "RFC3339",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isDir": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "originalPath": {
+                    "description": "relative to the viewer's scope when possible",
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "sourceName": {
+                    "type": "string"
+                },
+                "username": {
+                    "description": "only shown to admins",
+                    "type": "string"
+                }
+            }
+        },
+        "web.TrashResultItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },

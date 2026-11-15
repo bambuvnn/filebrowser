@@ -186,7 +186,10 @@ describe('session JWT keep-alive', () => {
     release();
     expect(await first).toBe(false);
     expect(await second).toBe(false);
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // One shared renew, then one shared Remember Me refresh attempt (fork).
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(global.fetch.mock.calls[0][0]).toContain('auth/renew');
+    expect(global.fetch.mock.calls[1][0]).toContain('auth/refresh');
     warnSpy.mockRestore();
   });
 

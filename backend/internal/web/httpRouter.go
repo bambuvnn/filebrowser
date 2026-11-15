@@ -42,6 +42,7 @@ func configureHTTPRouter(router, api, publicRoutes, publicApi *http.ServeMux) {
 	api.HandleFunc("POST /auth/otp/generate", withOrWithoutUser(withRateLimitChain(AuthRateLimitModerate, generateOTPHandler)))
 	api.HandleFunc("POST /auth/otp/verify", withOrWithoutUser(withRateLimitChain(AuthRateLimitCredentialLockout, verifyOTPHandler)))
 	api.HandleFunc("POST /auth/renew", withUser(withRateLimitChain(AuthRateLimitAuthenticated, renewHandler)))
+	api.HandleFunc("POST /auth/refresh", withoutUser(withRateLimitChain(AuthRateLimitModerate, refreshHandler)))
 	api.HandleFunc("POST /auth/token", withUser(withRateLimitChain(AuthRateLimitAuthenticated, createApiTokenHandler)))
 	api.HandleFunc("DELETE /auth/token", withUser(withRateLimitChain(AuthRateLimitAuthenticated, deleteApiTokenHandler)))
 	api.HandleFunc("GET /auth/token/list", withUser(withRateLimitChain(AuthRateLimitAuthenticated, listApiTokensHandler)))
@@ -85,6 +86,11 @@ func configureHTTPRouter(router, api, publicRoutes, publicApi *http.ServeMux) {
 	publicApi.HandleFunc("POST /resources/pause", withHashFile(PublicPauseHandler))
 	// Legacy routes (backwards compatibility)
 	api.HandleFunc("GET /raw", withUser(downloadHandler))
+
+	// Trash Routes - /api/trash/ (items arrive here through the normal delete endpoints)
+	api.HandleFunc("GET /trash", withUser(trashListHandler))
+	api.HandleFunc("POST /trash/restore", withUser(trashRestoreHandler))
+	api.HandleFunc("DELETE /trash", withUser(trashDeleteHandler))
 	publicApi.HandleFunc("GET /raw", withHashFile(publicDownloadHandler))
 
 	// ========================================

@@ -118,6 +118,12 @@
           @action="showInfoPrompt"
         />
         <action
+          v-if="showCopyUrl"
+          icon="link"
+          :label="$t('buttons.copyUrl')"
+          @action="copyItemUrl"
+        />
+        <action
           v-if="showDownload"
           icon="file_download"
           :label="$t('general.download')"
@@ -246,6 +252,7 @@ import {
 } from "@/utils/tooltipHelp.js";
 import { url } from "@/utils";
 import { copyToClipboard } from "@/utils/clipboard";
+import { buildItemUrl, getUserScopeForSource } from "@/utils/url.js";
 import { globalVars } from "@/utils/constants.js";
 import downloadFiles from "@/utils/download";
 import { canNativeShare, nativeShareFile } from "@/utils/nativeShare";
@@ -394,6 +401,10 @@ export default {
     showInfo() {
       if (this.showLimitedOptions) return this.selectedCount === 1;
       return !this.showCreate && this.selectedCount === 1;
+    },
+    showCopyUrl() {
+      if (this.showLimitedOptions) return false;
+      return !this.showCreate && !this.isShare && this.isLoggedIn && this.selectedCount === 1;
     },
     showDownload() {
       if (this.showLimitedOptions) return false;
@@ -957,6 +968,20 @@ export default {
 
       await copyToClipboard(path);
       mutations.closeHovers();
+    },
+    // Copies an absolute (scope-prefixed) URL so users with a different scope,
+    // including admins, can open the same item. Files.vue strips the viewer's
+    // own scope back off when the link is opened.
+    async copyItemUrl() {
+      mutations.closeHovers();
+      const item = this.firstSelected;
+      if (!item) return;
+      const source = item.source || state.req?.source || state.sources.current;
+      const path = item.path || "";
+      const userScope = getUserScopeForSource(source);
+      const absolutePath = userScope && userScope !== "/" ? userScope + path : path;
+      const relativePath = buildItemUrl(source, absolutePath, true);
+      await copyToClipboard(`${window.location.origin}${relativePath}`);
     },
     showNewDirPrompt() {
       mutations.closeHovers();

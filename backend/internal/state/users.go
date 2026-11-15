@@ -444,7 +444,14 @@ func UpdateUser(user *users.User, plaintextPassword string, fields ...string) er
 		}
 	}
 
-	return commitUserUpdate(existingUser, storedSnapshot, sourceDefaults, sourceEnforced)
+	if err := commitUserUpdate(existingUser, storedSnapshot, sourceDefaults, sourceEnforced); err != nil {
+		return err
+	}
+	// A password change signs the user out of "Remember Me" on every device.
+	if FieldListIncludes(fields, "password") {
+		revokeRefreshTokensBestEffort(existingUser.ID, "password change")
+	}
+	return nil
 }
 
 func commitUserUpdate(existingUser, storedSnapshot *users.User, sourceDefaults users.SourceFilePermissions, sourceEnforced settings.SourceFilePermissionsEnforcement) error {
@@ -713,6 +720,7 @@ func DeleteUser(id uint64) error {
 	if accessDb != nil {
 		_ = accessDb.RemoveHashedTokensForUser(id)
 	}
+	revokeRefreshTokensBestEffort(id, "user deletion")
 
 	return nil
 }
@@ -740,6 +748,7 @@ func DeleteUserByUsername(username string) error {
 	if accessDb != nil && uid != 0 {
 		_ = accessDb.RemoveHashedTokensForUser(uid)
 	}
+	revokeRefreshTokensBestEffort(uid, "user deletion")
 	return nil
 }
 

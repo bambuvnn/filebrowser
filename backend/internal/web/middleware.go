@@ -254,8 +254,11 @@ func extractUserFromExpiredToken(r *http.Request, data *requestContext) *users.U
 
 	// An expired token may only identify a user for a bounded window past its
 	// expiry; older tokens resolve nothing even if their hash is still known.
-	if tk.RegisteredClaims.ExpiresAt == nil ||
-		time.Since(tk.RegisteredClaims.ExpiresAt.Time) >= state.BearerTokenGrace {
+	if tk.RegisteredClaims.ExpiresAt == nil {
+		if !isRegisteredNonExpiringApiToken(tokenString) {
+			return nil
+		}
+	} else if time.Since(tk.RegisteredClaims.ExpiresAt.Time) >= state.BearerTokenGrace {
 		return nil
 	}
 
@@ -521,9 +524,9 @@ func withUserHelper(fn handleFunc) handleFunc {
 		if state.IsTokenRevoked(data.Token) {
 			return http.StatusUnauthorized, fmt.Errorf("token is expired or revoked")
 		}
-		// ExpiresAt should always be set in valid tokens created by our system
-		// JWT library populates RegisteredClaims.ExpiresAt
-		if tk.RegisteredClaims.ExpiresAt == nil {
+		// ExpiresAt is always set on session tokens. Only named API tokens created
+		// with "never expire" may omit it, and only once registered as such.
+		if tk.RegisteredClaims.ExpiresAt == nil && !isRegisteredNonExpiringApiToken(data.Token) {
 			return http.StatusUnauthorized, fmt.Errorf("token is invalid or revoked")
 		}
 		userValue, err := resolveBearerTokenUser(data.Token)
@@ -914,4 +917,12 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 				fmt.Sprintf("%vms", duration.Milliseconds()),
 				fullURL))
 	})
+}
+
+// isRegisteredNonExpiringApiToken reports whether token (already signature-checked)
+// is a known named API token. Session tokens never qualify, so a session JWT
+// without an exp claim is always rejected.
+func isRegisteredNonExpiringApiToken(token string) bool {
+	_, isSession, ok := state.HashedTokenOwner(token)
+	return ok && !isSession
 }

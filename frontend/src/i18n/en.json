@@ -178,6 +178,7 @@
     "generateNewOtp": "Reset and generate new two-factor code",
     "copyFile": "Copy file",
     "copyPath": "Copy Path",
+    "copyUrl": "Copy url",
     "copyToClipboard": "Copy to clipboard",
     "copyDownloadLinkToClipboard": "Copy download link to clipboard",
     "moveFile": "Move file",
@@ -323,6 +324,7 @@
     "failedLogin": "Failed to login",
     "invalidCredentials": "Invalid credentials provided",
     "passkeyLogin": "Use Passkey",
+    "rememberMe": "Remember me",
     "recaptchaRequired": "Recaptcha challenge required",
     "requirePasswordChangeTitle": "Change your password",
     "requirePasswordChangeInstructions": "You must set a new password before continuing.",
@@ -761,7 +763,10 @@
     "clickToCopyKey": "Click to copy token (hidden)",
     "customizeToken": "Customize Token",
     "customizeTokenInfo": "Customize global token permissions (admin, API, share, realtime). File permissions always come from the associated user account per source.",
-    "minimalInfo": "Excludes token customizations, permissions will match the associated user and have no other attributes."
+    "minimalInfo": "Excludes token customizations, permissions will match the associated user and have no other attributes.",
+    "neverExpire": "Never Expire",
+    "neverExpireInfo": "Create a token that never expires. Use with caution — non-expiring tokens remain valid until manually deleted.",
+    "never": "Never"
   },
   "index": {
     "unknown": "Unknown",
@@ -1212,5 +1217,28 @@
   },
   "pwa": {
     "install": "Install app"
+  },
+  "trash": {
+    "title": "Trash",
+    "name": "Name",
+    "originalPath": "Original Path",
+    "deletedAt": "Deleted At",
+    "expiresAt": "Expires At",
+    "owner": "Owner",
+    "restore": "Restore",
+    "deletePermanently": "Delete Permanently",
+    "empty": "Trash is empty",
+    "allUsers": "Show all users' items",
+    "confirmDeleteTitle": "Delete Permanently",
+    "confirmDeleteSingle": "Are you sure you want to permanently delete this item? This cannot be undone.",
+    "confirmDeleteMultiple": "Are you sure you want to permanently delete {count} item(s)? This cannot be undone.",
+    "restoreSuccess": "Item(s) restored successfully!",
+    "deleteSuccess": "Item(s) permanently deleted!",
+    "restoreFailed": "Failed to restore item(s)",
+    "deleteFailed": "Failed to delete item(s)",
+    "itemsSelected": "{count} item(s) selected",
+    "emptyDescription": "Deleted files and folders are kept here for 7 days before they are removed permanently.",
+    "itemSelectedLabel": "item selected",
+    "itemsSelectedLabel": "items selected"
   }
 }

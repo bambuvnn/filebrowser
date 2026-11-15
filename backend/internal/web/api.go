@@ -23,7 +23,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param name query string true "Name of the API token"
-// @Param days query string true "Duration of the API token in days"
+// @Param days query string false "Duration of the API token in days; 0 or omitted = never expires"
 // @Param permissions query string false "Global permissions (comma-separated: admin, api, share, realtime). Send \"minimal\" or omit with minimal=true for a WebDAV-compatible token."
 // @Param minimal query bool false "When true, create a minimal token (standard JWT claims only). When false, create a customized token using permissions (may be empty)."
 // @Success 200 {object} HttpResponse "Token created successfully, response contains json object with token"
@@ -44,8 +44,9 @@ func createApiTokenHandler(w http.ResponseWriter, r *http.Request, d *Context) (
 	if name == "" || strings.HasPrefix(name, "WEB_TOKEN") {
 		return http.StatusBadRequest, fmt.Errorf("api token name must be valid")
 	}
+	// days=0 (or omitted) creates a token that never expires.
 	if durationStr == "" {
-		return http.StatusBadRequest, fmt.Errorf("api token duration must be valid")
+		durationStr = "0"
 	}
 
 	// For full tokens (minimal=false), permissions are embedded in the JWT claim.
@@ -63,13 +64,18 @@ func createApiTokenHandler(w http.ResponseWriter, r *http.Request, d *Context) (
 
 	// Convert the duration string to an int64
 	durationInt, err := strconv.ParseInt(durationStr, 10, 64) // Base 10 and bit size of 64
-	if err != nil {
-		return http.StatusBadRequest, fmt.Errorf("invalid duration value: %w", err)
+	if err != nil || durationInt < 0 {
+		return http.StatusBadRequest, fmt.Errorf("invalid duration value: %v", durationStr)
 	}
 
-	// Here we assume the duration is in seconds; convert to time.Duration
-	duration := time.Duration(durationInt) * time.Hour * 24
-	tokenString, authToken, err := auth.MakeSignedTokenAPI(d.User, name, duration, permissions, minimal)
+	var tokenString string
+	var authToken users.AuthToken
+	if durationInt == 0 {
+		tokenString, authToken, err = auth.MakeSignedNonExpiringTokenAPI(d.User, name, permissions, minimal)
+	} else {
+		duration := time.Duration(durationInt) * time.Hour * 24
+		tokenString, authToken, err = auth.MakeSignedTokenAPI(d.User, name, duration, permissions, minimal)
+	}
 	if err != nil {
 		if strings.Contains(err.Error(), "key already exists with same name") {
 			return http.StatusConflict, err

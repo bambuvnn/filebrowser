@@ -19,7 +19,7 @@ backend_dev_tool = $$(cd $(BACKEND_BUILD) && go tool -n $(1))
 
 .SILENT:
 
-.PHONY: setup update build build-docker build-backend build-frontend dev run generate-docs
+.PHONY: setup update build build-docker build-docker-local build-docker-slim setup-buildx build-backend build-frontend dev run generate-docs
 .PHONY: lint-frontend lint-backend lint test test-backend test-frontend check-all
 .PHONY: check-translations sync-translations test-playwright test-playwright-performance playwright-base playwright-perf-base perf-check perf-smoke perf-baseline perf-dashboard run-proxy screenshots
 .PHONY: check-icons generate-icons sync-icons setup-gofitz-cgo
@@ -48,11 +48,49 @@ update:
 
 build: build-frontend build-backend
 
-build-docker:
-	docker build --build-arg="VERSION=testing" --build-arg="REVISION=n/a" -t gtstef/filebrowser -f _docker/Dockerfile .
+setup-buildx:
+	@docker buildx inspect multiarch > /dev/null 2>&1 || \
+		(echo "Creating multiarch builder..." && docker buildx create --name multiarch --driver docker-container --use)
+	@docker buildx use multiarch
 
-build-docker-slim:
-	docker build --build-arg="VERSION=testing" --build-arg="REVISION=n/a" -t gtstef/filebrowser -f _docker/Dockerfile.slim .
+# Build multi-platform (amd64 + arm64) và push lên Docker Hub
+build-docker: setup-buildx
+	@echo "Building multi-platform image and pushing to Docker Hub..."
+	docker buildx build \
+		--platform linux/amd64,linux/arm64 \
+		--build-arg="VERSION=testing" \
+		--build-arg="REVISION=n/a" \
+		-t bambuvn/filebrowser:latest \
+		-f _docker/Dockerfile \
+		--provenance=false \
+		--push \
+		.
+	@echo "✓ Multi-platform image pushed: bambuvn/filebrowser:latest"
+
+# Build local nhanh (chỉ platform hiện tại, không push) - dùng để test
+build-docker-local:
+	@echo "Building local image (current platform only)..."
+	docker build \
+		--build-arg="VERSION=testing" \
+		--build-arg="REVISION=n/a" \
+		-t bambuvn/filebrowser:local \
+		-f _docker/Dockerfile \
+		.
+	@echo "✓ Local image built: bambuvn/filebrowser:local"
+
+# Build slim multi-platform và push lên Docker Hub
+build-docker-slim: setup-buildx
+	@echo "Building slim multi-platform image and pushing to Docker Hub..."
+	docker buildx build \
+		--platform linux/amd64,linux/arm64 \
+		--build-arg="VERSION=testing" \
+		--build-arg="REVISION=n/a" \
+		-t bambuvn/filebrowser:slim \
+		-f _docker/Dockerfile.slim \
+		--provenance=false \
+		--push \
+		.
+	@echo "✓ Slim multi-platform image pushed: bambuvn/filebrowser:slim"
 
 build-backend:
 	@echo "Building backend..."

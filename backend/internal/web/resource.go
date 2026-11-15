@@ -305,7 +305,12 @@ func resourceDeleteHandler(w http.ResponseWriter, r *http.Request, d *Context) (
 	}
 
 	adjustments := prepareDeleteQuotaAdjustments(d, source, fullIndexPath, fileInfo)
-	err = files.DeleteFiles(source, userScope, fullIndexPath, fileInfo.Type == "directory")
+	if d.Share.Hash == "" {
+		// Trash: regular deletes are soft deletes (restorable for 7 days).
+		err = moveToTrashInsteadOfDelete(d.User, source, userScope, fullIndexPath, fileInfo.Type == "directory")
+	} else {
+		err = files.DeleteFiles(source, userScope, fullIndexPath, fileInfo.Type == "directory")
+	}
 	if err != nil {
 		return ErrToStatus(err), err
 	}
@@ -592,7 +597,8 @@ func ResourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *Contex
 			}
 			fullIndexPath := utils.JoinScopedIndexPath(userScope, sanitizedPath)
 			adjustments := prepareDeleteQuotaAdjustments(d, item.Source, fullIndexPath, fileInfo)
-			err = files.DeleteFiles(item.Source, userScope, fullIndexPath, fileInfo.Type == "directory")
+			// Trash: regular deletes are soft deletes (restorable for 7 days).
+			err = moveToTrashInsteadOfDelete(filePermUser, item.Source, userScope, fullIndexPath, fileInfo.Type == "directory")
 			if err != nil {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,

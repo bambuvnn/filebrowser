@@ -1693,6 +1693,10 @@ func setFilePreviewFlags(fileInfo *iteminfo.ItemInfo, realPath string) {
 // IsViewable checks if a path is viewable (allows FS access)
 // Only checks the item itself, not parent paths
 func (idx *Index) IsViewable(isDir bool, indexPath string, isSymlink bool, isHidden bool) bool {
+	// Fork: the per-source trash folder is never viewable, regardless of rules.
+	if IsTrashIndexPath(indexPath) {
+		return false
+	}
 	if indexPath == "/" || idx.Config.ResolvedRules.NoRules {
 		return true
 	}
@@ -1755,6 +1759,10 @@ func (idx *Index) IsViewable(isDir bool, indexPath string, isSymlink bool, isHid
 // IsViewableWithParentCheck checks if a path is viewable by walking up the directory tree
 // Used for API requests where we need to check inherited rules from parent folders
 func (idx *Index) IsViewableWithParentCheck(isDir bool, indexPath string, isSymlink bool, isHidden bool) bool {
+	// Fork: the per-source trash folder (and everything in it) is never viewable.
+	if IsTrashIndexPath(indexPath) {
+		return false
+	}
 	if idx.Config.ResolvedRules.IndexingDisabled || idx.Config.ResolvedRules.NoRules {
 		return true
 	}
@@ -1779,6 +1787,10 @@ func (idx *Index) IsViewableWithParentCheck(isDir bool, indexPath string, isSyml
 // isRoutineScan: true for scanner (no parent checks), false for API (check parents)
 func (idx *Index) ShouldSkip(isDir bool, adjustedPath string, isHidden bool, isSymlink bool, isRoutineScan bool) bool {
 	if idx.Config.ResolvedRules.IndexingDisabled {
+		return true
+	}
+	// Fork: the per-source trash folder is never indexed or listed, regardless of rules.
+	if IsTrashIndexPath(adjustedPath) {
 		return true
 	}
 	rules := idx.Config.ResolvedRules

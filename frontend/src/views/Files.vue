@@ -20,7 +20,7 @@ import Preview from "@/views/files/Preview.vue";
 import ListingView from "@/views/files/ListingView.vue";
 import { state, mutations, getters } from "@/store";
 import { router } from "@/router";
-import { extractSourceFromPath, removeLastDir, base64Encode, removeTrailingSlash } from "@/utils/url.js";
+import { extractSourceFromPath, removeLastDir, base64Encode, removeTrailingSlash, stripScopeFromPath } from "@/utils/url.js";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import { globalVars } from "@/utils/constants";
 import { syncEventTheme } from "@/utils/theme";
@@ -474,7 +474,8 @@ export default {
 
           this.loadingProgress = 10;
           const fetchSource = decodeURIComponent(result.source);
-          const fetchPath = decodeURIComponent(result.path);
+          // Strip the viewer's scope prefix so absolute links from "Copy url" resolve correctly
+          const fetchPath = stripScopeFromPath(decodeURIComponent(result.path), fetchSource);
 
           const res = await fetchAuthItemWithParent(fetchSource, fetchPath);
           if (state.sources.count > 1) {

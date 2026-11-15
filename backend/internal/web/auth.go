@@ -212,6 +212,7 @@ func SetupJwtUser(r *http.Request, data *Context, username string, claims map[st
 // @Param recaptcha query string false "ReCaptcha response token (if enabled)"
 // @Param X-Password header string true "URL-encoded password"
 // @Param X-Secret header string false "TOTP code (if 2FA is enabled)"
+// @Param rememberMe query bool false "When true, also set a long-lived refresh token cookie (Remember Me)"
 // @Success 200 {string} string "JWT token for authentication"
 // @Failure 401 {object} map[string]string "Unauthorized - authentication failed"
 // @Failure 403 {object} map[string]string "Forbidden - authentication failed"
@@ -231,8 +232,14 @@ func loginHandler(w http.ResponseWriter, r *http.Request, d *Context) (int, erro
 	if passwordUser && d.User.RequirePasswordChange {
 		return http.StatusForbidden, errors.ErrPasswordChangeRequired
 	}
+	// Remember Me: the refresh cookie must be set before printToken writes the body.
+	var refreshToken string
+	if rememberMeRequested(r) {
+		refreshToken = issueRefreshTokenBestEffort(w, r, d.User)
+	}
 	status, err := printToken(w, r, d.User, "")
 	if err != nil || status != 0 {
+		revokeRefreshTokenBestEffort(refreshToken)
 		return status, err
 	}
 	activity.RecordLogin(r, d.User)
@@ -258,6 +265,17 @@ func logoutHandler(w http.ResponseWriter, r *http.Request, d *Context) (int, err
 
 	// Clear the authentication cookie by setting it to expire in the past
 	http.SetCookie(w, sessionCookie(r, "", time.Unix(0, 0), -1, http.SameSiteStrictMode))
+
+	// Remember Me: clear the refresh cookie and revoke the user's refresh tokens on all devices.
+	clearRefreshCookie(w, r)
+	if c, err := r.Cookie(refreshCookieName); err == nil && c.Value != "" {
+		revokeRefreshTokenBestEffort(c.Value)
+	}
+	if d.User != nil {
+		if err := state.RevokeAllRefreshTokensForUser(d.User.ID); err != nil {
+			logger.Errorf("Failed to revoke refresh tokens on logout: %v", err)
+		}
+	}
 
 	logoutUrl := fmt.Sprintf("%vlogin", settings.Config.Http.BaseURL) // Default fallback
 	if d.User != nil && d.User.LoginMethod == users.LoginMethodProxy {

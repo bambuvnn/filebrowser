@@ -1,5 +1,6 @@
 import i18n from "@/i18n/index.ts";
 import { state } from "@/store/index.ts";
+import { refresh } from "@/utils/auth.js";
 import type { FileListItem } from "@/store/types.ts";
 
 const defaultRequestTimeoutMs = 5000;
@@ -74,6 +75,20 @@ export async function fetchURL(
   }
 
   // Session JWT renew is handled by utils/auth session keep-alive (not per-request headers).
+  // Remember Me: on 401 try the refresh-token cookie once, then replay the request.
+  // Streaming bodies cannot be replayed, so those requests are not retried.
+  if (res.status === 401 && _auth && !(rest.body instanceof ReadableStream)) {
+    if (await refresh()) {
+      res = await fetch(url, {
+        credentials: 'same-origin',
+        headers: {
+          "sessionId": state.sessionId,
+          ...headers,
+        },
+        ...rest,
+      });
+    }
+  }
   if (res.status < 200 || res.status > 299) {
     throw new HttpError(await res.text(), res.status);
   }

@@ -85,6 +85,9 @@ func StartHttp(ctx context.Context, deps Deps, shutdownComplete chan struct{}) {
 
 	initRuntime(deps, fs)
 
+	// Trash auto-purge (7-day retention) and expired refresh-token cleanup.
+	startTrashScheduler(ctx)
+
 	router := http.NewServeMux()
 	api := http.NewServeMux()
 	publicRoutes := http.NewServeMux()
